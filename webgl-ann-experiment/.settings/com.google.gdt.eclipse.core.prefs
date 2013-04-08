@@ -1,3 +1,5 @@
 eclipse.preferences.version=1
-lastWarOutDir=D\:/Projects/workspace-eclipse-jee-juno-SR1-win32-x86_64/webgl-ann-experiment/war
+jarsExcludedFromWebInfLib=
+lastWarOutDir=C\:/Users/Markus/git/sw-engineering-candies-webgl-ann-experiment/webgl-ann-experiment/war
+warSrcDir=war
 warSrcDirIsOutput=false
