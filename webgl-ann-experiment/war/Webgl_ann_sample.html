@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+   <head>
+      <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+      <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+      <style>
+         a { color:#009de9; font-family: Helvetica; font-style: normal; font-size:10pt; text-align:left; }	        
+         h1 { color:#FFF; font-family: Helvetica; font-size:14pt; text-align:left;  padding-left:5px;}	        
+         .text { color:#FFF; font-family: Helvetica; font-size:10pt; text-align:left;  padding-left:5px; padding-right:5px;}	        
+	     .warning { color:#F00; font-family: Helvetica; font-size:10pt; text-align:left;  padding-left:5px; padding-right:5px;}	        
+		 .main { background:#252525; padding:0px; }   
+         .gwt-ProgressBar-shell { border: 2px solid #faf9f7; border-right: 2px solid #848280; border-bottom: 2px solid #848280; background-color: #AAAAAA; height: 14pt; width: 50%; }
+		 .gwt-ProgressBar-shell .gwt-ProgressBar-bar { background-color: #67A7E3; }
+		 .gwt-ProgressBar-shell .gwt-ProgressBar-text { padding: 0px; margin: 0px; color: white; }
+      </style>
+      <title>WebGL Experiment - ANN</title>
+      <script type="text/javascript" language="javascript" src="webgl_ann_sample/webgl_ann_sample.nocache.js"></script>
+   </head>
+   
+   <body class="main">
+   
+      <noscript>
+         <div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
+            Your web browser must have JavaScript enabled
+            in order for this application to display correctly.
+         </div>
+      </noscript>
+ 
+ 	  <script type="text/javascript" src="Detector.js"></script>
+      <script type="text/javascript" src="three.min.js"></script>
+      <script type="text/javascript" src="Jsonhelper.js"></script> 	
+      <script type="text/javascript" src="Webgl_ann_sample.js"></script> 	
+   	
+	  <div id="header" >   
+      	<h1 class="title">Experimental Visualization of Artificial Neural Network with WebGL</h1>
+	  
+      	<table align="right" >
+      		<tr>
+      			<div class="text">
+    				<a href="https://plus.google.com/u/0/117292523089281814301?rel=author">by Markus Sprunck</a><p/>
+    				This experiment shows an Artificial Neural Network which learns to detect the frequency of 
+    				the input signal independent from the phase. The implementation is based on Three.js (r56), Guava and 
+    				Google Web Toolkit. GWT helps to translate the Java code for the Artificial Neural Network 
+    				into JavaScript, which is then executed in the browser. The experiment has been developed with 
+    				GWT 2.5 and App Engine SDK 1.7.3. It runs best with Chrome Browser. You may read more and 
+    				get the source code 
+    				<a href="http://www.sw-engineering-candies.com/blog-1/experimental-visualization-of-artificial-neural-network-with-webgl">here</a>.   				
+    			</div>
+      		</tr>
+      	</table>
+      </div>
+     	
+   	  <div id="drawingArea" ></div>   
+   
+      <div id="footer" >   
+     	 <table align="right" width="100%">
+     	 	<td>
+     	 		<div id="infoLabelContainer1"></div>
+        		<div id="infoLabelContainer2"></div>
+        		<div id="infoLabelContainer3" class="warning"></div>
+        	</td>
+    		<td width="90px" id="resetButtonContainer"></td>
+        	<td width="90px" id="trainButtonContainer"></td>
+ 	  	</table>
+	  </div>
+     
+   </body>
+</html>
