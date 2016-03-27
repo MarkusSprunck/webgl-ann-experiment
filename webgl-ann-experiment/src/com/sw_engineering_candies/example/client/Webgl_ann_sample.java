@@ -153,9 +153,9 @@ public class Webgl_ann_sample implements EntryPoint {
 	public void outputStatusMessage() {
 
 		final StringBuffer message1 = new StringBuffer(
-				"mean squared error (x1000) = ");
-		final double rms = 1000.0 * network.rms(pattern);
-		message1.append(NumberFormat.getFormat("##.00000").format(rms));
+				"mean squared error  = ");
+		final double rms = network.rms(pattern);
+		message1.append(NumberFormat.getFormat("##.0000").format(rms));
 		messageLabel1.setText(message1.toString());
 
 		final StringBuffer message2 = new StringBuffer("training");

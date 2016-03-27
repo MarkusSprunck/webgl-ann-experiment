@@ -80,56 +80,12 @@ public class NetworkTest {
 	}
 
 	@Test
-	public void testRecallLayers() {
-
-		List<Neuron> neurons = testObjectNetwork.getLayers().get(0)
-				.getNeurons();
-		neurons.get(0).setInput(-0.5);
-		neurons.get(1).setInput(+0.5);
-
-		testObjectNetwork.recallNetwork();
-		final Layer layer = testObjectNetwork.getLayers().get(
-				testObjectNetwork.getLayers().size() - 1);
-		neurons = layer.getNeurons();
-		assertEquals(0.36268088881821636, neurons.get(0).getOutput(), 0.0);
-	}
-
-	@Test
-	public void testLayerToString() {
-		final List<Neuron> neurons = testObjectNetwork.getLayers().get(0)
-				.getNeurons();
-		neurons.get(0).setInput(-0.5);
-		neurons.get(1).setInput(+0.5);
-
-		testObjectNetwork.recallNetwork();
-		assertEquals(
-				"{\"nodes\":[{\"y\":-0.5,\"y_ex\":0.0},{\"y\":0.5,\"y_ex\":0.0}]}",
-				layer10.toString());
-		assertEquals(
-				"{\"nodes\":[{\"y\":0.5124973964842103,\"y_ex\":0.0},{\"y\":0.5124973964842103,\"y_ex\":0.0}]}",
-				layer20.toString());
-		assertEquals("{\"nodes\":[{\"y\":0.36268088881821636,\"y_ex\":0.0}]}",
-				layer30.toString());
-		assertEquals(
-				"{\"layers\":[{\"nodes\":[{\"y\":-0.5,\"y_ex\":0.0},{\"y\":0.5,\"y_ex\":0.0}]},{\"nodes\":[{\"y\":0.5124973964842103,\"y_ex\":0.0},{\"y\":0.5124973964842103,\"y_ex\":0.0}]},{\"nodes\":[{\"y\":0.36268088881821636,\"y_ex\":0.0}]}]}",
-				testObjectNetwork.toString());
-
-	}
-
-	@Test
 	public void testSetPatterns() {
-		final Double[][] table = new Double[][] { { 0.5, 0.6, 1.1 },
-				{ 0.8, 0.7, 1.2 } };
+		final Double[][] table = new Double[][] { { 0.5, 0.6, 1.1 }, { 0.8, 0.7, 1.2 } };
 		testObjectPatterns.bind(testObjectNetwork, table);
-		assertEquals("{0=0.5, 1=0.8}",
-				testObjectPatterns.getPatterns().column(testObjectNeuron11)
-						.toString());
-		assertEquals("{0=0.6, 1=0.7}",
-				testObjectPatterns.getPatterns().column(testObjectNeuron12)
-						.toString());
-		assertEquals("{0=1.1, 1=1.2}",
-				testObjectPatterns.getPatterns().column(testObjectNeuron31)
-						.toString());
+		assertEquals("{0=0.5, 1=0.8}", testObjectPatterns.getPatterns().column(testObjectNeuron11).toString());
+		assertEquals("{0=0.6, 1=0.7}", testObjectPatterns.getPatterns().column(testObjectNeuron12).toString());
+		assertEquals("{0=1.1, 1=1.2}", testObjectPatterns.getPatterns().column(testObjectNeuron31).toString());
 
 		testObjectPatterns.activatePattern(0);
 		assertEquals(0.5, testObjectNeuron11.getInput(), 0);
@@ -143,17 +99,14 @@ public class NetworkTest {
 		assertEquals(0.7, testObjectNeuron12.getInput(), 0);
 		assertEquals(1.2, testObjectNeuron31.getOutputExpected(), 0);
 		testObjectNetwork.recallNetwork();
-		assertEquals(0.4407941265386288, testObjectNeuron31.getOutput(), 0);
+		assertEquals(0.4407941265386288, testObjectNeuron31.getOutput(), 0.0000000001);
 	}
 
 	@Test
 	public void testSetPatternsWrong() {
-		final Double[][] table = new Double[][] { { 0.5, 0.6, 1.1 },
-				{ 0.8, 0.7, 1.2 } };
+		final Double[][] table = new Double[][] { { 0.5, 0.6, 1.1 }, { 0.8, 0.7, 1.2 } };
 		testObjectPatterns.bind(testObjectNetwork, table);
-		assertEquals("{}",
-				testObjectPatterns.getPatterns().column(testObjectNeuron21)
-						.toString());
+		assertEquals("{}", testObjectPatterns.getPatterns().column(testObjectNeuron21).toString());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -173,96 +126,93 @@ public class NetworkTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testActivatePatternsWrong1() {
-		final Double[][] table = new Double[][] { { 0.5, 0.6, 1.1 },
-				{ 0.8, 0.7, 1.2 } };
+		final Double[][] table = new Double[][] { { 0.5, 0.6, 1.1 }, { 0.8, 0.7, 1.2 } };
 		testObjectPatterns.bind(testObjectNetwork, table);
 		testObjectPatterns.activatePattern(-1);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testActivatePatternsWrong2() {
-		final Double[][] table = new Double[][] { { 0.5, 0.6, 1.1 },
-				{ 0.8, 0.7, 1.2 } };
+		final Double[][] table = new Double[][] { { 0.5, 0.6, 1.1 }, { 0.8, 0.7, 1.2 } };
 		testObjectPatterns.bind(testObjectNetwork, table);
 		testObjectPatterns.activatePattern(2);
+	}
+
+
+
+	@Test
+	public void testAND() {
+		System.out.println("\ntestAND start");
+
+		final Double[][] table = new Double[][] { { -0.9, -0.9, 0.0 }, { -0.9, 0.9, 0.0 }, { 0.9, -0.9, 0.0 },
+				{ 0.9, 0.9, 0.45 } };
+
+		testObjectPatterns.bind(testObjectNetwork, table);
+		testObjectNetwork.trainBackpropagation(testObjectPatterns, 1000, 10);
+
+		testObjectPatterns.activatePattern(0);
+		testObjectNetwork.recallNetwork();
+		outputState();
+		assertEquals(0.0, testObjectNeuron31.getOutput(), 0.05);
+
+		testObjectPatterns.activatePattern(1);
+		testObjectNetwork.recallNetwork();
+		outputState();
+		assertEquals(0.0, testObjectNeuron31.getOutput(), 0.05);
+
+		testObjectPatterns.activatePattern(2);
+		testObjectNetwork.recallNetwork();
+		outputState();
+		assertEquals(0.0, testObjectNeuron31.getOutput(), 0.05);
+
+		testObjectPatterns.activatePattern(3);
+		testObjectNetwork.recallNetwork();
+		outputState();
+		assertEquals(0.45, testObjectNeuron31.getOutput(), 0.05);
+
+		System.out.println(String.format("rms=%1.6f", testObjectNetwork.rms(testObjectPatterns)));
+		System.out.println("testAND succeeded");
 	}
 
 	@Test
 	public void testOR() {
-		System.out.println("test OR");
+		System.out.println("\ntestOR start");
 
-		final Double[][] table = new Double[][] { { 0.0, 0.0, 0.0 },
-				{ 0.0, 1.0, 1.0 }, { 1.0, 0.0, 1.0 }, { 1.0, 1.0, 1.0 } };
+		final Double[][] table = new Double[][] { { -0.9, -0.9, 0.0 }, { -0.9, 0.9, 0.45 }, { 0.9, -0.9, 0.45 },
+				{ 0.9, 0.9, 0.45 } };
+
 		testObjectPatterns.bind(testObjectNetwork, table);
-		testObjectNetwork.trainBackpropagation(testObjectPatterns, 15000, 1);
+		testObjectNetwork.trainBackpropagation(testObjectPatterns, 5000, 10);
 
 		testObjectPatterns.activatePattern(0);
 		testObjectNetwork.recallNetwork();
-		assertEquals(0.0, testObjectNeuron31.getOutput(), 0.02);
 		outputState();
+		assertEquals(0.0, testObjectNeuron31.getOutput(), 0.2);
 
 		testObjectPatterns.activatePattern(1);
 		testObjectNetwork.recallNetwork();
-		assertEquals(1.0, testObjectNeuron31.getOutput(), 0.02);
 		outputState();
+		assertEquals(0.45, testObjectNeuron31.getOutput(), 0.2);
 
 		testObjectPatterns.activatePattern(2);
 		testObjectNetwork.recallNetwork();
-		assertEquals(1.0, testObjectNeuron31.getOutput(), 0.02);
 		outputState();
+		assertEquals(0.45, testObjectNeuron31.getOutput(), 0.2);
 
 		testObjectPatterns.activatePattern(3);
 		testObjectNetwork.recallNetwork();
-		assertEquals(1.0, testObjectNeuron31.getOutput(), 0.02);
 		outputState();
+		assertEquals(0.45, testObjectNeuron31.getOutput(), 0.2);
 
-		System.out.println(String.format("rms=%1.5f",
-				testObjectNetwork.rms(testObjectPatterns)));
+		System.out.println(String.format("rms=%f", testObjectNetwork.rms(testObjectPatterns)));
+		System.out.println("testOR succeeded");
 	}
 
-	@Test
-	public void testAND() {
-		System.out.println("testAND");
-
-		final Double[][] table = new Double[][] { { 0.0, 0.0, 0.0 },
-				{ 0.0, 1.0, 0.0 }, { 1.0, 0.0, 0.0 }, { 1.0, 1.0, 1.0 } };
-		testObjectPatterns.bind(testObjectNetwork, table);
-		testObjectNetwork.trainBackpropagation(testObjectPatterns, 15000, 1);
-
-		testObjectPatterns.activatePattern(0);
-		testObjectNetwork.recallNetwork();
-		assertEquals(0.0, testObjectNeuron31.getOutput(), 0.02);
-		outputState();
-
-		testObjectPatterns.activatePattern(1);
-		testObjectNetwork.recallNetwork();
-		assertEquals(0.0, testObjectNeuron31.getOutput(), 0.03);
-		outputState();
-
-		testObjectPatterns.activatePattern(2);
-		testObjectNetwork.recallNetwork();
-		assertEquals(0.0, testObjectNeuron31.getOutput(), 0.03);
-		outputState();
-
-		testObjectPatterns.activatePattern(3);
-		testObjectNetwork.recallNetwork();
-		assertEquals(1.0, testObjectNeuron31.getOutput(), 0.03);
-		outputState();
-
-		System.out.println(String.format("rms=%1.5f",
-				testObjectNetwork.rms(testObjectPatterns)));
-	}
-
+	
 	public void outputState() {
-		System.out
-				.println(testObjectNeuron11.getInput()
-						+ "\t"
-						+ testObjectNeuron12.getInput()
-						+ "\t"
-						+ String.format("%1.2f", testObjectNeuron31.getOutput())
-						+ "\t"
-						+ String.format("%1.2f",
-								testObjectNeuron31.getOutputExpected()));
+		System.out.println(testObjectNeuron11.getInput() + "   " + testObjectNeuron12.getInput() + "   "
+				+ String.format("%1.3f", testObjectNeuron31.getOutput()) + "   "
+				+ String.format("%1.3f", testObjectNeuron31.getOutputExpected()));
 	}
 
 }

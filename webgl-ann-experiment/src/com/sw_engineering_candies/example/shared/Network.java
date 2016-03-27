@@ -42,13 +42,13 @@ import java.util.List;
 
 public class Network {
 
-	private static final double GAMMA = 3.0;
+	private static final double GAMMA = 2.0;
 
-	private static final double ALPHA = 0.10;
+	private static final double ALPHA = 0.1;
 
-	private static final double WEIGHT_DECAY = 6.0;
+	private static final double WEIGHT_DECAY = 4.0;
 
-	private static final double FLAT_SPOT = 0.01;
+	private static final double FLAT_SPOT = 0.001;
 
 	private final List<Layer> layers = new ArrayList<Layer>();
 
@@ -82,12 +82,12 @@ public class Network {
 		}
 	}
 
-	public void trainBackpropagation(final Pattern pattern,
-			final int itterations, final int steps) {
+	public void trainBackpropagation(final Pattern pattern, final int itterations, final int steps) {
 
 		final int maxLayerIndex = layers.size() - 1;
 
 		for (int step = 0; step < steps; step++) {
+
 			for (int i = 0; i < itterations; i++) {
 
 				// Activate a random pattern
@@ -97,8 +97,7 @@ public class Network {
 				recallNetwork();
 
 				// Calculate errors of output neurons
-				for (final Neuron neuron : layers.get(maxLayerIndex)
-						.getNeurons()) {
+				for (final Neuron neuron : layers.get(maxLayerIndex).getNeurons()) {
 					neuron.calculateEvaluateOutputError();
 				}
 
@@ -113,14 +112,10 @@ public class Network {
 				for (int k = maxLayerIndex; k > 0; k--) {
 					for (final Neuron neuron : layers.get(k).getNeurons()) {
 						for (final Link link : neuron.getLinks()) {
-							final double weightDecayTerm = Math.pow(10,
-									-WEIGHT_DECAY) * link.getWeight();
-							final double momentumTerm = ALPHA
-									* link.getDeltaWeigthOld();
-							link.setDeltaWeigth(link.getDeltaWeigth() - GAMMA
-									* link.getSource().getOutput()
-									* neuron.getOutputDerived()
-									* neuron.getOutputError() + momentumTerm
+							final double weightDecayTerm = Math.pow(10, -WEIGHT_DECAY) * link.getWeight();
+							final double momentumTerm = ALPHA * link.getDeltaWeigthOld();
+							link.setDeltaWeigth(link.getDeltaWeigth() - GAMMA * link.getSource().getOutput()
+									* neuron.getOutputDerived() * neuron.getOutputError() + momentumTerm
 									- weightDecayTerm);
 						}
 					}
@@ -130,8 +125,7 @@ public class Network {
 				for (int k = maxLayerIndex; k > 0; k--) {
 					for (final Neuron neuron : layers.get(k).getNeurons()) {
 						for (final Link link : neuron.getLinks()) {
-							link.setWeight(link.getWeight()
-									+ link.getDeltaWeigth());
+							link.setWeight(link.getWeight() + link.getDeltaWeigth());
 							link.setDeltaWeigthOld(link.getDeltaWeigth());
 							link.setDeltaWeigth(0.0);
 						}
@@ -145,8 +139,8 @@ public class Network {
 					}
 				}
 			}
+			// System.out.println(String.format("rms=%1.15f", rms(pattern)));
 		}
-
 	}
 
 	public void resetLinks() {
@@ -157,22 +151,23 @@ public class Network {
 
 	public double rms(final Pattern patterns) {
 
-		double result = 0;
+		double result = 0.0;
 		final int patternNumber = patterns.getNumberOfPattern();
 		for (int i = 0; i < patternNumber; i++) {
 			// Activate a random pattern
 			patterns.activatePattern(i);
+
 			// Forward propagation of input values
 			recallNetwork();
+
 			// Calculate errors of output neurons
-			for (final Neuron neuron : layers.get(layers.size() - 1)
-					.getNeurons()) {
+			for (final Neuron neuron : layers.get(layers.size() - 1).getNeurons()) {
 				neuron.calculateEvaluateOutputError();
-				result = +Math.pow(neuron.getOutputError(), 2.0);
+				result += Math.pow(neuron.getOutputError(), 2.0);
 			}
 		}
 
-		return result / patternNumber;
+		return result / (double) patternNumber;
 	}
 
 	@Override

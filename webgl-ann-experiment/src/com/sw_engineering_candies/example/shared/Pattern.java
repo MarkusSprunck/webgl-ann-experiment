@@ -88,7 +88,9 @@ public class Pattern {
 	}
 
 	public void activatePatternRandom() {
-		activatePattern((int) (Math.random() * numberOfPattern % numberOfPattern));
+		int index = (int) (Math.random() * numberOfPattern );
+		//System.out.println("pattern " + index + "/" + numberOfPattern);
+		activatePattern(index);
 	}
 
 	public void activatePattern(final int index) {

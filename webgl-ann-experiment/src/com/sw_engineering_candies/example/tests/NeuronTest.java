@@ -146,11 +146,11 @@ public class NeuronTest {
 
 	@Test
 	public void testToString() {
-		assertEquals("{\"y\":1.0,\"y_ex\":0.0}",
+		assertEquals("{\"y\":0.0,\"y_ex\":0.0}",
 				underTestNeuronInner.toString());
-		assertEquals("{\"y\":1024.0,\"y_ex\":0.0}",
+		assertEquals("{\"y\":1.123,\"y_ex\":0.0}",
 				underTestNeuronInput.toString());
-		assertEquals("{\"y\":0.5,\"y_ex\":0.24}",
+		assertEquals("{\"y\":0.0,\"y_ex\":12.0}",
 				underTestNeuronOutput.toString());
 	}
 

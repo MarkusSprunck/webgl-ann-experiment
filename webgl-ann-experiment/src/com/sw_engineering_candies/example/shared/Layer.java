@@ -61,7 +61,7 @@ public class Layer {
 	public void resetLinks() {
 		for (final Neuron neuron : neurons) {
 			for (final Link link : neuron.getLinks()) {
-				link.setWeight(Math.random() - 0.5);
+				link.setWeight(0.1*(Math.random() - 0.5));
 			}
 		}
 	}

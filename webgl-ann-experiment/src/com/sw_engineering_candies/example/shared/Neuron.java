@@ -83,9 +83,9 @@ public class Neuron {
 	}
 
 	private double functionFermi(final double x) {
-		if (x > Double.MAX_EXPONENT) {
+		if (x > 15) {
 			return 1.0;
-		} else if (x < Double.MIN_EXPONENT) {
+		} else if (x < -15) {
 			return 0.0;
 		} else {
 			final double y = 1.0 / (1.0 + Math.exp(-x));
