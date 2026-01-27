@@ -192,7 +192,7 @@
       <recent name="$PROJECT_DIR$/src" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.start">
+  <component name="RunManager" selected="npm.build">
     <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/typescript/package.json" />
       <command value="run" />
@@ -245,10 +245,10 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="npm.build" />
         <item itemvalue="npm.start" />
         <item itemvalue="npm.clean" />
         <item itemvalue="npm.test" />
-        <item itemvalue="npm.build" />
         <item itemvalue="npm.build:clean" />
       </list>
     </recent_temporary>
