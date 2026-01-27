@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/remoteEntry.ts"],
+  "sourcesContent": ["async function fetchModel(): Promise<string> {\n  const res = await fetch('/api/model');\n  if (!res.ok) throw new Error('fetch model failed');\n  return res.text();\n}\n\nasync function start() {\n  try {\n    const model = await fetchModel();\n    if (typeof (window as any).renderData === 'function') {\n      (window as any).renderData(model);\n    } else {\n      console.warn('renderer function not found');\n    }\n  } catch (e) {\n    console.error(e);\n  }\n}\n\nif (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);\nelse start();\n"],
+  "mappings": "mBAAA,eAAeA,GAA8B,CAC3C,IAAMC,EAAM,MAAM,MAAM,YAAY,EACpC,GAAI,CAACA,EAAI,GAAI,MAAM,IAAI,MAAM,oBAAoB,EACjD,OAAOA,EAAI,KAAK,CAClB,CAEA,eAAeC,GAAQ,CACrB,GAAI,CACF,IAAMC,EAAQ,MAAMH,EAAW,EAC3B,OAAQ,OAAe,YAAe,WACvC,OAAe,WAAWG,CAAK,EAEhC,QAAQ,KAAK,6BAA6B,CAE9C,OAAS,EAAG,CACV,QAAQ,MAAM,CAAC,CACjB,CACF,CAEI,SAAS,aAAe,UAAW,SAAS,iBAAiB,mBAAoBD,CAAK,EACrFA,EAAM",
+  "names": ["fetchModel", "res", "start", "model"]
+}

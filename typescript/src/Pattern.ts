@@ -1,0 +1,65 @@
+import {Neuron} from './Neuron';
+
+export class Pattern {
+    protected numberOfPattern = 0;
+
+    // Layer.getNeurons() returns a readonly array; keep readonly in Pattern
+    protected inputNeurons: readonly Neuron[] = [];
+
+    protected outputNeurons: readonly Neuron[] = [];
+
+    protected value: Map<number, Map<Neuron, number>> = new Map();
+
+    bind(network: {
+        getLayers: () => { getNeurons: () => Neuron[] }[]
+    }, table: number[][]) {
+        if (!network) throw new Error('network null');
+        if (!table) throw new Error('table null');
+        if (table.length === 0) throw new Error('empty table');
+
+        const layers = (network as any).getLayers();
+        this.inputNeurons = layers[0].getNeurons();
+        this.outputNeurons = layers[layers.length - 1].getNeurons();
+
+        const inputNeuronNumber = this.inputNeurons.length;
+        const outputNeuronNumber = this.outputNeurons.length;
+        if (inputNeuronNumber + outputNeuronNumber !== table[0].length) throw new Error('dimension mismatch');
+
+        this.numberOfPattern = table.length;
+        this.value = new Map();
+
+        for (let row = 0; row < this.numberOfPattern; row++) {
+            const map = new Map<Neuron, number>();
+            // inputs
+            for (let col = 0; col < inputNeuronNumber; col++) {
+                map.set(this.inputNeurons[col], table[row][col]);
+            }
+            for (let col = 0; col < outputNeuronNumber; col++) {
+                map.set(this.outputNeurons[col], table[row][col + inputNeuronNumber]);
+            }
+            this.value.set(row, map);
+        }
+    }
+
+    getPatterns() {
+        return this.value;
+    }
+
+    activatePatternRandom() {
+        const index = Math.floor(Math.random() * this.numberOfPattern);
+        this.activatePattern(index);
+    }
+
+    activatePattern(index: number) {
+        if (index < 0 || index >= this.numberOfPattern) throw new Error('index out of range');
+        const map = this.value.get(index)!;
+        for (const [neuron, val] of map.entries()) {
+            if (this.inputNeurons.includes(neuron)) neuron.setInput(val);
+            else neuron.setOutputExpected(val);
+        }
+    }
+
+    getNumberOfPattern() {
+        return this.numberOfPattern;
+    }
+}
