@@ -4,91 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="41cdfdf1-52c8-44b1-93f0-4e5b331a04fa" name="Changes" comment="Add multiple new JavaScript and TypeScript files">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/dist_node/run_ui_equivalent_training.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/jest.config.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/package-lock.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/package.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/src/Layer.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/src/Link.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/src/ModelFactory.test.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/src/ModelFactory.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/src/Network.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/src/Neuron.test.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/src/Neuron.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/src/Pattern.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/src/PatternAndNetwork.test.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/src/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/src/remoteEntry.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/tsconfig.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/war/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/war/js/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/war/js/index.js.map" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/war/libs/Detector.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/war/libs/Jsonhelper.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/war/webgl_ann_sample/app.bundle.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/typescript/war/webgl_ann_sample/app.bundle.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/.classpath" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/.project" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/.settings/com.google.appengine.eclipse.core.prefs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/.settings/com.google.gdt.eclipse.core.prefs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/.settings/com.google.gwt.eclipse.core.prefs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/.settings/org.eclipse.jdt.ui.prefs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/src/META-INF/jdoconfig.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/src/META-INF/persistence.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/src/com/sw_engineering_candies/example/Webgl_ann_sample.gwt.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/src/com/sw_engineering_candies/example/client/Webgl_ann_sample.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/src/com/sw_engineering_candies/example/shared/Layer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/src/com/sw_engineering_candies/example/shared/Link.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/src/com/sw_engineering_candies/example/shared/ModelFactory.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/src/com/sw_engineering_candies/example/shared/Network.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/src/com/sw_engineering_candies/example/shared/Neuron.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/src/com/sw_engineering_candies/example/shared/Pattern.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/src/com/sw_engineering_candies/example/tests/ModelFactoryTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/src/com/sw_engineering_candies/example/tests/NetworkTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/src/com/sw_engineering_candies/example/tests/NeuronTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/src/log4j.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/Detector.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/Jsonhelper.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/WEB-INF/appengine-web.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/WEB-INF/classes/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/WEB-INF/classes/META-INF/jdoconfig.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/WEB-INF/classes/META-INF/persistence.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/WEB-INF/classes/log4j.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/WEB-INF/deploy/webgl_ann_sample/rpcPolicyManifest/manifest.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/WEB-INF/lib/appengine-api-1.0-sdk-1.7.3.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/WEB-INF/lib/appengine-api-labs.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/WEB-INF/lib/appengine-endpoints.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/WEB-INF/lib/appengine-jsr107cache-1.7.3.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/WEB-INF/lib/gwt-servlet.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/WEB-INF/lib/jsr107cache-1.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/WEB-INF/logging.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/WEB-INF/web.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/Webgl_ann_sample.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/Webgl_ann_sample.js" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/war/Webgl_ann_sample.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/favicon.ico" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/three.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/typescript/war/libs/three.min.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/webgl_ann_sample/clear.cache.gif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/webgl_ann_sample/gwt/dark/dark.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/webgl_ann_sample/gwt/dark/dark_rtl.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/webgl_ann_sample/gwt/dark/images/corner.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/webgl_ann_sample/gwt/dark/images/corner_ie6.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/webgl_ann_sample/gwt/dark/images/hborder.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/webgl_ann_sample/gwt/dark/images/hborder_ie6.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/webgl_ann_sample/gwt/dark/images/ie6/corner_dialog_topleft.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/webgl_ann_sample/gwt/dark/images/ie6/corner_dialog_topright.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/webgl_ann_sample/gwt/dark/images/ie6/hborder_blue_shadow.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/webgl_ann_sample/gwt/dark/images/ie6/hborder_gray_shadow.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/webgl_ann_sample/gwt/dark/images/ie6/vborder_blue_shadow.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/webgl_ann_sample/gwt/dark/images/ie6/vborder_gray_shadow.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/webgl_ann_sample/gwt/dark/images/splitPanelThumb.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/webgl_ann_sample/gwt/dark/images/vborder.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/webgl_ann_sample/gwt/dark/images/vborder_ie6.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/webgl_ann_sample/hosted.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webgl-ann-experiment/war/webgl_ann_sample/webgl_ann_sample.nocache.js" beforeDir="false" />
-    </list>
+    <list default="true" id="41cdfdf1-52c8-44b1-93f0-4e5b331a04fa" name="Changes" comment="Update RunManager configuration to use npm.clean" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -192,7 +108,7 @@
       <recent name="$PROJECT_DIR$/src" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.clean">
+  <component name="RunManager" selected="npm.start">
     <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/typescript/package.json" />
       <command value="run" />
@@ -203,11 +119,11 @@
       <envs />
       <method v="2" />
     </configuration>
-    <configuration name="build:clean" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+    <configuration name="bundle:remote:local" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/typescript/package.json" />
       <command value="run" />
       <scripts>
-        <script value="build:clean" />
+        <script value="bundle:remote:local" />
       </scripts>
       <node-interpreter value="project" />
       <envs />
@@ -223,6 +139,16 @@
       <envs />
       <method v="2" />
     </configuration>
+    <configuration name="dev" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/typescript/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
     <configuration name="start" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/typescript/package.json" />
       <command value="run" />
@@ -233,23 +159,13 @@
       <envs />
       <method v="2" />
     </configuration>
-    <configuration name="test" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/typescript/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="test" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="npm.clean" />
-        <item itemvalue="npm.build" />
         <item itemvalue="npm.start" />
-        <item itemvalue="npm.test" />
-        <item itemvalue="npm.build:clean" />
+        <item itemvalue="npm.build" />
+        <item itemvalue="npm.clean" />
+        <item itemvalue="npm.dev" />
+        <item itemvalue="npm.bundle:remote:local" />
       </list>
     </recent_temporary>
   </component>
@@ -275,12 +191,43 @@
       <workItem from="1769364549897" duration="392000" />
       <workItem from="1769364945814" duration="5188000" />
       <workItem from="1769451468297" duration="6157000" />
-      <workItem from="1769542343858" duration="2615000" />
+      <workItem from="1769542343858" duration="2935000" />
     </task>
+    <task id="LOCAL-00001" summary="Migrate from GWT to Typescript">
+      <option name="closed" value="true" />
+      <created>1769545219068</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1769545219068</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Update RunManager configuration to use npm.build">
+      <option name="closed" value="true" />
+      <created>1769545305316</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1769545305316</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Update RunManager configuration to use npm.clean">
+      <option name="closed" value="true" />
+      <created>1769545341093</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1769545341093</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Migrate from GWT to Typescript" />
+    <MESSAGE value="Update RunManager configuration to use npm.build" />
+    <MESSAGE value="Update RunManager configuration to use npm.clean" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update RunManager configuration to use npm.clean" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/webgl_ann_experiment$java_in_webgl_ann_sample.ic" NAME="java in webgl-ann-sample Coverage Results" MODIFIED="1769365824412" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
