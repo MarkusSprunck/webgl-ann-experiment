@@ -43,7 +43,7 @@ fi
 # Step 2: Create dist structure
 echo ""
 echo "Step 2: Creating dist structure..."
-mkdir -p "$DIST_DIR/libs" "$DIST_DIR/legacy" "$DIST_DIR/styles"
+mkdir -p "$DIST_DIR/libs" "$DIST_DIR/styles"
 print_status "Created dist directories"
 
 # Step 3: Bundle TypeScript
@@ -71,6 +71,9 @@ echo "Step 4: Copying static assets..."
 cp public/index.html "$DIST_DIR/"
 print_status "Copied index.html"
 
+cp public/bootstrap.js "$DIST_DIR/"
+print_status "Copied bootstrap.js"
+
 if [ -d "public/styles" ]; then
   cp public/styles/* "$DIST_DIR/styles/" 2>/dev/null || true
   print_status "Copied CSS files"
@@ -82,15 +85,10 @@ echo "Step 5: Copying third-party libraries..."
 cp libs/* "$DIST_DIR/libs/"
 print_status "Copied libraries"
 
-# Step 6: Copy legacy code
-echo ""
-echo "Step 6: Copying legacy code..."
-cp legacy/* "$DIST_DIR/legacy/"
-print_status "Copied legacy WebGL renderer"
 
-# Step 7: Generate build info
+# Step 6: Generate build info
 echo ""
-echo "Step 7: Generating build info..."
+echo "Step 6: Generating build info..."
 cat > "$DIST_DIR/build-info.json" <<EOF
 {
   "buildDate": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
@@ -103,7 +101,7 @@ cat > "$DIST_DIR/build-info.json" <<EOF
 EOF
 print_status "Generated build-info.json"
 
-# Step 8: Display build summary
+# Step 7: Display build summary
 echo ""
 echo -e "${GREEN}═══════════════════════════════════════${NC}"
 echo -e "${GREEN}Build Summary${NC}"

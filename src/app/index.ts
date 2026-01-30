@@ -1,5 +1,6 @@
 import {ModelFactory} from '../factories/ModelFactory';
 import {Network} from '../core/Network';
+import {exposeRendererToWindow} from '../renderer/WebGLRenderer';
 
 // Minimal browser glue to demonstrate TS ANN running in the existing HTML page
 function $(id: string): HTMLElement | null {
@@ -19,6 +20,9 @@ export function initApp() {
     return;
   }
   (window as any).__tsInitDone = true;
+
+  // Expose the WebGL renderer to window for backwards compatibility
+  exposeRendererToWindow();
 
   writeInfo('Initializing ANN (TypeScript)...');
   const factory = new ModelFactory();

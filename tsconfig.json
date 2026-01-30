@@ -15,7 +15,9 @@
     "paths": {
       "@core/*": ["src/core/*"],
       "@factories/*": ["src/factories/*"],
-      "@app/*": ["src/app/*"]
+      "@app/*": ["src/app/*"],
+      "@renderer/*": ["src/renderer/*"],
+      "@bootstrap/*": ["src/bootstrap/*"]
     }
   },
   "include": ["src/**/*.ts"],

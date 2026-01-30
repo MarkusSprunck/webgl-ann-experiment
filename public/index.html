@@ -8,12 +8,9 @@
     <script type="text/javascript" src="libs/Detector.js"></script>
     <script type="text/javascript" src="libs/three.min.js"></script>
     <script type="text/javascript" src="libs/Jsonhelper.js"></script>
-    <!-- legacy renderer / WebGL bootstrap (must be loaded before the TS module bundle) -->
-    <script type="text/javascript" src="legacy/Webgl_ann_sample.js"></script>
   </head>
   <body>
     <div id="header">
-      <h1>WebGL ANN</h1>
       <div id="toolbar">
         <div class="controls">
           <button id="ts-train-button" type="button">Train</button>
@@ -50,86 +47,7 @@
       <div style="color:red;background:#fff;padding:8px;">JavaScript is required to run this demo.</div>
     </noscript>
 
-    <!-- Bootstrap: wait for renderer and TS init, then start app -->
-    <script>
-      (function waitAndStart(){
-        var waited = 0;
-        var interval = 100;
-        var timeout = 10000; // extended timeout to allow slower loads
-        function ready() {
-          return typeof window.initApp === 'function' && typeof window.renderData === 'function' && typeof window.THREE !== 'undefined';
-        }
-        if (ready()) { try { window.initApp(); } catch (e) { console.error('initApp threw', e); } return; }
-        var iv = setInterval(function(){
-          waited += interval;
-          if (ready()) {
-            clearInterval(iv);
-            try { window.initApp(); } catch (e) { console.error('initApp threw', e); }
-            return;
-          }
-          if (waited > timeout) {
-            clearInterval(iv);
-            console.warn('Bootstrap: initApp/renderData/THREE not ready after timeout');
-          }
-        }, interval);
-      })();
-    </script>
-
-    <!-- Diagnostic: wait for renderer canvas, log status, and force resize to trigger renderer's resize handler -->
-    <script>
-      (function waitForCanvas(){
-        var waited=0; var interval=100; var timeout=10000; // extended timeout
-        function check(){
-          var container = document.getElementById('drawingArea');
-          var canvas = container && container.querySelector('canvas');
-          if (canvas) {
-            console.log('Diagnostic: found renderer canvas', canvas);
-            try{
-              console.log('Detector.webgl =', window.Detector && window.Detector.webgl);
-              console.log('drawingArea size:', container.clientWidth, container.clientHeight);
-              // ensure canvas displays at container size
-              canvas.style.width = container.clientWidth + 'px';
-              canvas.style.height = container.clientHeight + 'px';
-              try { window.dispatchEvent(new Event('resize')); console.log('Dispatched resize event to trigger renderer resize handler'); } catch (e) { console.warn('Dispatch resize failed', e); }
-            } catch(e){ console.warn('Diagnostic error', e); }
-            return;
-          }
-          waited += interval;
-          if (waited > timeout) {
-            console.warn('Diagnostic: renderer canvas not found after timeout');
-            return;
-          }
-          setTimeout(check, interval);
-        }
-        setTimeout(check, interval);
-      })();
-    </script>
-
-    <!-- Dynamically load the TS module bundle only when THREE is ready to avoid race conditions -->
-    <script>
-      (function loadModuleWhenThreeReady(){
-        var waited = 0;
-        var interval = 100;
-        var timeout = 10000; // 10s
-        function appendModule(){
-          try{
-            var s = document.createElement('script');
-            s.type = 'module';
-            s.defer = true;
-            s.src = 'bundle.js?v=' + Date.now();
-            document.head.appendChild(s);
-            console.log('Module bundle appended');
-          }catch(e){
-            console.error('Failed to append module bundle', e);
-          }
-        }
-        if (typeof window !== 'undefined' && window.THREE) { appendModule(); return; }
-        var iv = setInterval(function(){
-          if (typeof window !== 'undefined' && window.THREE) { clearInterval(iv); appendModule(); return; }
-          waited += interval;
-          if (waited > timeout) { clearInterval(iv); console.warn('Module loader: THREE not found after timeout, appending module anyway'); appendModule(); }
-        }, interval);
-      })();
-    </script>
+    <!-- Bootstrap script: handles initialization and module loading -->
+    <script type="text/javascript" src="bootstrap.js"></script>
   </body>
 </html>

@@ -71,8 +71,10 @@ const environments: Record<string, EnvironmentConfig> = {
  */
 export function getEnvironment(): string {
   // Check if NODE_ENV is defined (set by build tools)
-  if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV) {
-    return process.env.NODE_ENV;
+  // Use globalThis to safely access process in mixed environments
+  const proc = (globalThis as any).process;
+  if (typeof proc !== 'undefined' && proc.env && proc.env.NODE_ENV) {
+    return proc.env.NODE_ENV;
   }
 
   // Check hostname for production environment
