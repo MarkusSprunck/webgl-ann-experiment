@@ -35,7 +35,7 @@ esbuild src/app/index.ts \
   --bundle \
   --sourcemap \
   --outfile=dist/bundle.js \
-  --watch \
+  --watch=forever \
   --define:process.env.NODE_ENV=\"development\" &
 
 ESBUILD_PID=$!
