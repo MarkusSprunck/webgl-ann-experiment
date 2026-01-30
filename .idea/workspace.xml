@@ -4,7 +4,49 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="41cdfdf1-52c8-44b1-93f0-4e5b331a04fa" name="Changes" comment="Update RunManager configuration to use npm.clean" />
+    <list default="true" id="41cdfdf1-52c8-44b1-93f0-4e5b331a04fa" name="Changes" comment="Update RunManager configuration and add new TypeScript files">
+      <change afterPath="$PROJECT_DIR$/.github/workflows/ci-cd.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.github/workflows/release.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/COMMANDS.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/environments.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jest.config.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/styles/main.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/build.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/clean.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/deploy.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/dev.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/config.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/types/global.d.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/jest.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/config/jest.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/Layer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/Layer.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/Link.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/Link.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/ModelFactory.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/ModelFactory.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/ModelFactory.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/factories/ModelFactory.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/Network.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/Network.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/Neuron.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Neuron.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/Neuron.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/Neuron.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/Pattern.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/Pattern.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/PatternAndNetwork.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tests/PatternAndNetwork.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/src/remoteEntry.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/remoteEntry.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/tsconfig.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/war/Webgl_ann_sample.js" beforeDir="false" afterPath="$PROJECT_DIR$/legacy/Webgl_ann_sample.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/war/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/war/js/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/war/js/index.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/war/libs/Detector.js" beforeDir="false" afterPath="$PROJECT_DIR$/libs/Detector.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/war/libs/Jsonhelper.js" beforeDir="false" afterPath="$PROJECT_DIR$/libs/Jsonhelper.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/war/libs/three.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/libs/three.min.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/war/webgl_ann_sample/app.bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/typescript/war/webgl_ann_sample/app.bundle.js.map" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -33,6 +75,10 @@
     &quot;accountId&quot;: &quot;ccb95bc9-1a98-47ab-a4a6-372dfbc7bb89&quot;
   }
 }</component>
+  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
+  <component name="KubernetesApiProvider"><![CDATA[{
+  "isMigrated": true
+}]]></component>
   <component name="MacroExpansionManager">
     <option name="directoryName" value="E0sLkD3p" />
   </component>
@@ -49,53 +95,54 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;JUnit.All in webgl-ann-sample.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.java in webgl-ann-sample.executor&quot;: &quot;Coverage&quot;,
-    &quot;Jest.model factory creates pattern and network trains.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.webgl-ann-sample [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.webgl-ann-sample [compile].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.webgl-ann-sample [net.ltgt.gwt.maven:gwt-maven-plugin:1.0-rc-10:codeserver].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.webgl-ann-sample [net.ltgt.gwt.maven:gwt-maven-plugin:1.0-rc-10:compile].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.webgl-ann-sample [org.codehaus.mojo:gwt-maven-plugin:2.9.0:clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.webgl-ann-sample [org.codehaus.mojo:gwt-maven-plugin:2.9.0:compile].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.webgl-ann-sample [org.codehaus.mojo:gwt-maven-plugin:2.9.0:run].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.webgl-ann-sample [package].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.webgl-ann-sample [test].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.webgl-ann-sample [verify].executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/markus/Projects/github/webgl-ann-experiment/typescript/war&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs.jest.jest_package&quot;: &quot;/Users/markus/Projects/github/webgl-ann-experiment/typescript/node_modules/jest&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;npm.build (1).executor&quot;: &quot;Run&quot;,
-    &quot;npm.build (2).executor&quot;: &quot;Run&quot;,
-    &quot;npm.build.executor&quot;: &quot;Run&quot;,
-    &quot;npm.build:clean.executor&quot;: &quot;Run&quot;,
-    &quot;npm.bundle.executor&quot;: &quot;Run&quot;,
-    &quot;npm.bundle:local.executor&quot;: &quot;Run&quot;,
-    &quot;npm.bundle:remote.executor&quot;: &quot;Run&quot;,
-    &quot;npm.bundle:remote:local.executor&quot;: &quot;Run&quot;,
-    &quot;npm.clean.executor&quot;: &quot;Run&quot;,
-    &quot;npm.dev.executor&quot;: &quot;Run&quot;,
-    &quot;npm.start.executor&quot;: &quot;Run&quot;,
-    &quot;npm.test.executor&quot;: &quot;Run&quot;,
-    &quot;org.rust.first.attach.projects&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.project.maven.runner&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/Users/markus/Library/Application Support/JetBrains/IntelliJIdea2025.3/plugins/javascript-plugin/jsLanguageServicesImpl/external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "JUnit.All in webgl-ann-sample.executor": "Run",
+    "JUnit.java in webgl-ann-sample.executor": "Coverage",
+    "Jest.model factory creates pattern and network trains.executor": "Run",
+    "Maven.webgl-ann-sample [clean].executor": "Run",
+    "Maven.webgl-ann-sample [compile].executor": "Run",
+    "Maven.webgl-ann-sample [net.ltgt.gwt.maven:gwt-maven-plugin:1.0-rc-10:codeserver].executor": "Run",
+    "Maven.webgl-ann-sample [net.ltgt.gwt.maven:gwt-maven-plugin:1.0-rc-10:compile].executor": "Run",
+    "Maven.webgl-ann-sample [org.codehaus.mojo:gwt-maven-plugin:2.9.0:clean].executor": "Run",
+    "Maven.webgl-ann-sample [org.codehaus.mojo:gwt-maven-plugin:2.9.0:compile].executor": "Run",
+    "Maven.webgl-ann-sample [org.codehaus.mojo:gwt-maven-plugin:2.9.0:run].executor": "Run",
+    "Maven.webgl-ann-sample [package].executor": "Run",
+    "Maven.webgl-ann-sample [test].executor": "Run",
+    "Maven.webgl-ann-sample [verify].executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "git-widget-placeholder": "master",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/markus/Projects/github/webgl-ann-experiment/typescript/war",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs.jest.jest_package": "/Users/markus/Projects/github/webgl-ann-experiment/typescript/node_modules/jest",
+    "nodejs_package_manager_path": "npm",
+    "npm.build (1).executor": "Run",
+    "npm.build (2).executor": "Run",
+    "npm.build.executor": "Run",
+    "npm.build:clean.executor": "Run",
+    "npm.bundle.executor": "Run",
+    "npm.bundle:local.executor": "Run",
+    "npm.bundle:remote.executor": "Run",
+    "npm.bundle:remote:local.executor": "Run",
+    "npm.clean.executor": "Run",
+    "npm.dev.executor": "Run",
+    "npm.prebuild.executor": "Run",
+    "npm.start.executor": "Run",
+    "npm.test.executor": "Run",
+    "org.rust.first.attach.projects": "true",
+    "settings.editor.selected.configurable": "terminal",
+    "ts.external.directory.path": "/Users/markus/Library/Application Support/JetBrains/IntelliJIdea2025.3/plugins/javascript-plugin/jsLanguageServicesImpl/external",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/typescript/war" />
@@ -110,7 +157,7 @@
   </component>
   <component name="RunManager" selected="npm.start">
     <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/typescript/package.json" />
+      <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
       <scripts>
         <script value="build" />
@@ -119,18 +166,8 @@
       <envs />
       <method v="2" />
     </configuration>
-    <configuration name="bundle:remote:local" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/typescript/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="bundle:remote:local" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
-      <method v="2" />
-    </configuration>
     <configuration name="clean" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/typescript/package.json" />
+      <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
       <scripts>
         <script value="clean" />
@@ -139,18 +176,18 @@
       <envs />
       <method v="2" />
     </configuration>
-    <configuration name="dev" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/typescript/package.json" />
+    <configuration name="prebuild" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
       <scripts>
-        <script value="dev" />
+        <script value="prebuild" />
       </scripts>
       <node-interpreter value="project" />
       <envs />
       <method v="2" />
     </configuration>
     <configuration name="start" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/typescript/package.json" />
+      <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
       <scripts>
         <script value="start" />
@@ -159,13 +196,23 @@
       <envs />
       <method v="2" />
     </configuration>
+    <configuration name="test" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="test" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="npm.start" />
+        <item itemvalue="npm.test" />
         <item itemvalue="npm.build" />
+        <item itemvalue="npm.prebuild" />
         <item itemvalue="npm.clean" />
-        <item itemvalue="npm.dev" />
-        <item itemvalue="npm.bundle:remote:local" />
       </list>
     </recent_temporary>
   </component>
@@ -191,7 +238,8 @@
       <workItem from="1769364549897" duration="392000" />
       <workItem from="1769364945814" duration="5188000" />
       <workItem from="1769451468297" duration="6157000" />
-      <workItem from="1769542343858" duration="2935000" />
+      <workItem from="1769542343858" duration="3097000" />
+      <workItem from="1769803907996" duration="2220000" />
     </task>
     <task id="LOCAL-00001" summary="Migrate from GWT to Typescript">
       <option name="closed" value="true" />
@@ -217,7 +265,15 @@
       <option name="project" value="LOCAL" />
       <updated>1769545341093</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Update RunManager configuration and add new TypeScript files">
+      <option name="closed" value="true" />
+      <created>1769545525328</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1769545525328</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -227,7 +283,8 @@
     <MESSAGE value="Migrate from GWT to Typescript" />
     <MESSAGE value="Update RunManager configuration to use npm.build" />
     <MESSAGE value="Update RunManager configuration to use npm.clean" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update RunManager configuration to use npm.clean" />
+    <MESSAGE value="Update RunManager configuration and add new TypeScript files" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update RunManager configuration and add new TypeScript files" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/webgl_ann_experiment$java_in_webgl_ann_sample.ic" NAME="java in webgl-ann-sample Coverage Results" MODIFIED="1769365824412" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />

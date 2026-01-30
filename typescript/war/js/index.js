@@ -1,2 +1,0 @@
-"use strict";(()=>{async function t(){let e=await fetch("/api/model");if(!e.ok)throw new Error("fetch model failed");return e.text()}async function n(){try{let e=await t();typeof window.renderData=="function"?window.renderData(e):console.warn("renderer function not found")}catch(e){console.error(e)}}document.readyState==="loading"?document.addEventListener("DOMContentLoaded",n):n();})();
-//# sourceMappingURL=index.js.map

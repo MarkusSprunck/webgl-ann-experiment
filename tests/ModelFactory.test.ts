@@ -1,5 +1,5 @@
 /// <reference types="jest" />
-import { ModelFactory } from './ModelFactory';
+import { ModelFactory } from '../src/factories/ModelFactory';
 
 jest.setTimeout(120000);
 

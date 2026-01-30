@@ -1,8 +1,8 @@
 /// <reference types="jest" />
-import { Layer } from './Layer';
-import { Network } from './Network';
-import { Neuron, NeuronType } from './Neuron';
-import { Pattern } from './Pattern';
+import { Layer } from '../src/core/Layer';
+import { Network } from '../src/core/Network';
+import { Neuron, NeuronType } from '../src/core/Neuron';
+import { Pattern } from '../src/core/Pattern';
 
 describe('Pattern and Network', () => {
   test('bind and recall basics', () => {

@@ -1,0 +1,224 @@
+/**
+ * WebGL ANN Application Styles
+ */
+
+/* Base styles */
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: #252525;
+  color: #fff;
+  font-family: Helvetica, Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Links */
+a {
+  color: #009de9;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Warning text */
+.warning {
+  color: #f00;
+}
+
+/* Header styles */
+#header {
+  position: relative;
+  z-index: 9999;
+}
+
+#header h1 {
+  margin: 0;
+  padding: 16px;
+  font-size: 1.5em;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Toolbar layout: buttons at left, status at right */
+#toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.15);
+  position: relative;
+  z-index: 9999;
+}
+
+#toolbar .controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+#toolbar .controls button {
+  cursor: pointer;
+  margin: 4px;
+  padding: 8px 16px;
+  background: #444;
+  color: #fff;
+  border: 1px solid #666;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+#toolbar .controls button:hover:not(:disabled) {
+  background: #555;
+  border-color: #777;
+}
+
+#toolbar .controls button:active:not(:disabled) {
+  background: #333;
+}
+
+#toolbar .controls button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  background: #333;
+}
+
+#toolbar .controls label {
+  margin-left: 8px;
+  color: #ccc;
+  font-size: 0.9em;
+}
+
+#toolbar .controls input[type="number"] {
+  width: 80px;
+  margin-left: 6px;
+  padding: 4px 8px;
+  background: #333;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 3px;
+  font-size: 14px;
+}
+
+#toolbar .status {
+  text-align: right;
+  color: #ccc;
+  font-size: 0.9em;
+  min-width: 240px;
+}
+
+#toolbar .status div {
+  margin: 2px 0;
+}
+
+#toolbar .status .warning {
+  color: #f55;
+  font-weight: bold;
+}
+
+/* Drawing area should expand to fill remaining vertical space */
+#drawingArea {
+  flex: 1 1 auto;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+#drawingArea canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Footer styles */
+#footer {
+  position: relative;
+  z-index: 9999;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  text-align: center;
+  font-size: 0.85em;
+  color: #999;
+}
+
+/* Utility classes */
+.hidden {
+  display: none !important;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.mt-1 { margin-top: 8px; }
+.mt-2 { margin-top: 16px; }
+.mb-1 { margin-bottom: 8px; }
+.mb-2 { margin-bottom: 16px; }
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  #toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  #toolbar .controls {
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+
+  #toolbar .status {
+    text-align: center;
+    min-width: auto;
+  }
+
+  #header h1 {
+    font-size: 1.2em;
+    padding: 12px;
+  }
+}
+
+/* Loading indicator */
+.loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1.1em;
+}
+
+.loading::after {
+  content: '...';
+  animation: dots 1.5s steps(4, end) infinite;
+}
+
+@keyframes dots {
+  0%, 20% { content: '.'; }
+  40% { content: '..'; }
+  60%, 100% { content: '...'; }
+}
+
+/* NoScript warning */
+noscript div {
+  color: red;
+  background: #fff;
+  padding: 8px;
+  margin: 16px;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: bold;
+}

@@ -1,0 +1,35 @@
+{
+  "name": "webgl-ann-sample-ts",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "clean": "rimraf dist",
+    "clean:all": "./scripts/clean.sh --all",
+    "prebuild": "npm run clean",
+    "build": "tsc",
+    "build:dev": "./scripts/build.sh dev",
+    "build:prod": "./scripts/build.sh prod",
+    "copy-assets": "mkdir -p dist/libs dist/legacy dist/styles && cp public/index.html dist/ && cp public/styles/* dist/styles/ 2>/dev/null || true && cp libs/* dist/libs/ && cp legacy/* dist/legacy/",
+    "bundle": "esbuild src/app/index.ts --bundle --sourcemap --minify --outfile=dist/bundle.js",
+    "build:all": "npm run bundle && npm run copy-assets",
+    "test": "jest --runInBand",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "dev": "./scripts/dev.sh",
+    "dev:simple": "esbuild src/app/index.ts --bundle --sourcemap --outfile=dist/bundle.js --servedir=dist --watch",
+    "start": "npm run build:all && npx serve dist -p 8000",
+    "deploy": "./scripts/deploy.sh",
+    "type-check": "tsc --noEmit",
+    "lint": "echo 'No linter configured yet'",
+    "format": "echo 'No formatter configured yet'"
+  },
+  "devDependencies": {
+    "ts-jest": "29.1.0",
+    "typescript": "5.2.2",
+    "jest": "29.6.1",
+    "@types/jest": "29.5.4",
+    "esbuild": "0.19.0",
+    "serve": "14.2.0",
+    "rimraf": "5.0.0"
+  }
+}

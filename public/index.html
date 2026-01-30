@@ -3,29 +3,13 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-    <title>WebGL ANN - TypeScript (Index)</title>
-    <style>
-      html, body { height: 100%; margin: 0; }
-      body{background:#252525;color:#fff;font-family:Helvetica; display:flex; flex-direction:column;}
-      a{color:#009de9}
-      .warning{color:#F00}
-      #footer { position: relative; z-index: 9999; }
-      #footer button { cursor: pointer; margin: 4px; }
-      #ts-recall-interval { width: 80px; margin-left: 6px; }
-      /* toolbar layout: buttons at left, status at right */
-      #toolbar { display: flex; align-items: center; justify-content: space-between; padding: 8px; background: rgba(0,0,0,0.15); position: relative; z-index: 9999; }
-      #toolbar .controls { display: flex; align-items: center; }
-      #toolbar .controls button { cursor: pointer; margin: 4px; }
-      #toolbar .status { text-align: right; color: #ccc; font-size: 0.9em; min-width: 240px; }
-      #toolbar .status .warning { color: #f55; }
-      /* drawing area should expand to fill remaining vertical space */
-      #drawingArea { flex: 1 1 auto; width: 100%; }
-    </style>
+    <title>WebGL ANN - TypeScript</title>
+    <link rel="stylesheet" href="styles/main.css" />
     <script type="text/javascript" src="libs/Detector.js"></script>
     <script type="text/javascript" src="libs/three.min.js"></script>
     <script type="text/javascript" src="libs/Jsonhelper.js"></script>
     <!-- legacy renderer / WebGL bootstrap (must be loaded before the TS module bundle) -->
-    <script type="text/javascript" src="Webgl_ann_sample.js"></script>
+    <script type="text/javascript" src="legacy/Webgl_ann_sample.js"></script>
   </head>
   <body>
     <div id="header">
@@ -132,7 +116,7 @@
             var s = document.createElement('script');
             s.type = 'module';
             s.defer = true;
-            s.src = 'webgl_ann_sample/app.bundle.js?v=' + Date.now();
+            s.src = 'bundle.js?v=' + Date.now();
             document.head.appendChild(s);
             console.log('Module bundle appended');
           }catch(e){

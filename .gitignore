@@ -1,2 +1,28 @@
-/typescript/dist/
-/typescript/node_modules
+# Dependencies
+node_modules/
+typescript/node_modules/
+
+# Build outputs
+dist/
+typescript/dist/
+typescript/war/js/
+typescript/war/webgl_ann_sample/
+
+# Logs
+*.log
+npm-debug.log*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test coverage
+coverage/
+.nyc_output/

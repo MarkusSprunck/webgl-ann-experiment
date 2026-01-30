@@ -1,7 +1,7 @@
-import {Network} from './Network';
-import {Layer} from './Layer';
-import {Neuron, NeuronType} from './Neuron';
-import {Pattern} from './Pattern';
+import {Network} from '../core/Network';
+import {Layer} from '../core/Layer';
+import {Neuron, NeuronType} from '../core/Neuron';
+import {Pattern} from '../core/Pattern';
 
 export class ModelFactory extends Pattern {
     private static readonly ALPHA_INCRMENT = Math.PI / 180.0 * 8.0;

@@ -1,5 +1,5 @@
 /// <reference types="jest" />
-import { Neuron, NeuronType } from './Neuron';
+import { Neuron, NeuronType } from '../src/core/Neuron';
 
 describe('Neuron', () => {
   let inner: Neuron, input: Neuron, output: Neuron;

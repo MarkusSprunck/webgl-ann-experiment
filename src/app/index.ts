@@ -1,5 +1,5 @@
-import {ModelFactory} from './ModelFactory';
-import {Network} from './Network';
+import {ModelFactory} from '../factories/ModelFactory';
+import {Network} from '../core/Network';
 
 // Minimal browser glue to demonstrate TS ANN running in the existing HTML page
 function $(id: string): HTMLElement | null {
