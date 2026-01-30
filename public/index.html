@@ -1,61 +1,67 @@
 <!doctype html>
 <html>
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
     <title>WebGL ANN - TypeScript</title>
-    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/main.css"/>
     <script type="text/javascript" src="libs/Detector.js"></script>
     <script type="text/javascript" src="libs/three.min.js"></script>
     <script type="text/javascript" src="libs/Jsonhelper.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  </head>
-  <body>
-    <div id="header">
-      <div id="toolbar">
+</head>
+<body>
+<div id="header">
+    <div id="toolbar">
         <div class="controls">
-          <button id="ts-train-button" type="button">Train</button>
-          <button id="ts-reset-button" type="button">Reset</button>
-          <button id="ts-recall-button" type="button">Recall</button>
-          <button id="ts-stop-button" type="button" disabled>Stop</button>
-          <label style="margin-left:8px;color:#ccc;font-size:0.9em;">Interval (ms):</label>
-          <input id="ts-recall-interval" type="number" min="10" step="10" value="50" />
+            <button id="ts-train-button" type="button">Train</button>
+            <button id="ts-stop-button" type="button" disabled>Stop</button>
+            <button id="ts-recall-button" type="button">Recall</button>
+            <button id="ts-reset-button" type="button">Reset</button>
         </div>
         <div class="status">
-          <div id="infoLabelContainer1"></div>
-          <div id="infoLabelContainer2"></div>
-          <div id="infoLabelContainer3" class="warning"></div>
-          <div id="rmeDisplay" style="margin-top: 8px; color: #4CAF50; font-family: monospace; font-size: 14px;">RMS: --</div>
+            <div id="infoLabelContainer1"></div>
+            <div id="infoLabelContainer2"></div>
+            <div id="infoLabelContainer3" class="warning"></div>
+            <div id="rmeDisplay"
+                 style="margin-top: 8px; color: #4CAF50; font-family: monospace; font-size: 14px;">
+                RMS: --
+            </div>
         </div>
-      </div>
     </div>
+</div>
 
-    <div id="drawingArea"></div>
+<div id="drawingArea"></div>
 
-    <!-- RME Graph -->
-    <div id="rmeGraphContainer" style="position: fixed; top: 80px; right: 10px; width: 400px; height: 250px; background: rgba(255,255,255,0.95); padding: 10px; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); z-index: 100; display: none;">
-      <h3 style="margin: 0 0 10px 0; font-size: 14px; color: #333;">RMS Error During Training</h3>
-      <canvas id="rmeChart" style="width: 100%; height: 200px;"></canvas>
-    </div>
+<!-- RME Graph -->
+<div id="rmeGraphContainer"
+     style="position: fixed; top: 80px; right: 10px; width: 400px; height: 250px; background: rgba(255,255,255,0.95); padding: 10px; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); z-index: 100; display: none;">
+    <h3 style="margin: 0 0 10px 0; font-size: 14px; color: #333;">RMS Error During
+        Training</h3>
+    <canvas id="rmeChart" style="width: 100%; height: 200px;"></canvas>
+</div>
 
-    <div id="footer">
-      <table align="right" width="100%">
+<div id="footer">
+    <table align="right" width="100%">
         <tr>
-          <td>
-            <!-- status moved to header toolbar -->
-          </td>
-          <td width="250px">
-            <!-- controls moved to top toolbar -->
-          </td>
+            <td>
+                <!-- status moved to header toolbar -->
+            </td>
+            <td width="250px">
+                <!-- controls moved to top toolbar -->
+            </td>
         </tr>
-      </table>
+    </table>
+</div>
+
+<noscript>
+    <div style="color:red;background:#fff;padding:8px;">JavaScript is required to run this
+        demo.
     </div>
+</noscript>
 
-    <noscript>
-      <div style="color:red;background:#fff;padding:8px;">JavaScript is required to run this demo.</div>
-    </noscript>
-
-    <!-- Bootstrap script: handles initialization and module loading -->
-    <script type="text/javascript" src="bootstrap.js"></script>
-  </body>
+<!-- Bootstrap script: handles initialization and module loading -->
+<script type="text/javascript" src="bootstrap.js"></script>
+</body>
 </html>

@@ -94,6 +94,24 @@ export class Network {
         return result / patternNumber;
     }
 
+    /**
+     * Calculate RMS for specific pattern indices (for train/test evaluation)
+     */
+    rmsForIndices(patterns: Pattern, indices: number[]) {
+        if (indices.length === 0) return 0.0;
+
+        let result = 0.0;
+        for (const i of indices) {
+            patterns.activatePattern(i);
+            this.recallNetwork();
+            for (const neuron of this.layers[this.layers.length - 1].getNeurons()) {
+                (neuron as any).calculateEvaluateOutputError();
+                result += Math.pow((neuron as any).getOutputError(), 2.0);
+            }
+        }
+        return result / indices.length;
+    }
+
     toString() {
         return `{"layers":[${this.layers.map(l => l.toString()).join(',')}]}`;
     }

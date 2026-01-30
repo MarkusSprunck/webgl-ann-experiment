@@ -29,6 +29,9 @@ export function initApp() {
   const factory = new ModelFactory();
   const network: Network = factory.createBindTestPattern();
 
+  // Create 80/20 train/test split
+  factory.createTrainTestSplit();
+
   writeInfo('Created network with layers: ' + network.getLayers().length);
   // Reset network on load so visualization starts from a clean state
   try {
@@ -47,7 +50,6 @@ export function initApp() {
         if (typeof (window as any).forceRender === 'function') {
           try { (window as any).forceRender(); } catch (e) { console.warn('forceRender failed', e); }
         }
-        writeInfo('Sent model to WebGL renderer');
       } catch (e) {
         console.warn('Failed to call renderData', e);
       }
@@ -61,11 +63,11 @@ export function initApp() {
   let trainingIteration = 0;
 
   // Function to update RME display
-  function updateRMEDisplay(rme: number, iteration: number) {
+  function updateRMEDisplay(trainRme: number, testRme: number, iteration: number) {
     if (rmeDisplay) {
-      rmeDisplay.textContent = `RMS: ${rme.toFixed(6)}`;
+      rmeDisplay.innerHTML = `<span style="color: #4CAF50;">Train: ${trainRme.toFixed(6)}</span> | <span style="color: #2196F3;">Test: ${testRme.toFixed(6)}</span>`;
     }
-    rmeChart.addDataPoint(iteration, rme);
+    rmeChart.addDataPoint(iteration, trainRme, testRme);
   }
 
   // Hook up simple UI buttons if present (use static controls in index.html)
@@ -73,7 +75,6 @@ export function initApp() {
   const resetBtn = document.getElementById('ts-reset-button') as HTMLButtonElement | null;
   const recallBtn = document.getElementById('ts-recall-button') as HTMLButtonElement | null;
   const stopBtn = document.getElementById('ts-stop-button') as HTMLButtonElement | null;
-  const intervalInput = document.getElementById('ts-recall-interval') as HTMLInputElement | null;
 
   // state for recall loop
   let recallTimer: number | null = null;
@@ -86,7 +87,6 @@ export function initApp() {
   function setRecallRunning(running: boolean) {
     if (recallBtn) recallBtn.disabled = running;
     if (stopBtn) stopBtn.disabled = !running;
-    if (intervalInput) intervalInput.disabled = running;
   }
 
   if (trainBtn) {
@@ -156,16 +156,11 @@ export function initApp() {
         console.log('Recall already running');
         return;
       }
-      // read interval from input (milliseconds) and validate
-      let intervalMs = 50;
-      if (intervalInput) {
-        const raw = String(intervalInput.value || '').trim();
-        const parsed = raw.length > 0 ? Number(raw) : NaN;
-        if (Number.isFinite(parsed) && parsed >= 10) intervalMs = Math.floor(parsed);
-      }
-      const intervalClamped = Math.max(10, Math.floor(intervalMs));
 
-      // start cycling through patterns every intervalClamped ms
+      // Use fixed interval of 50ms
+      const intervalMs = 50;
+
+      // start cycling through patterns every intervalMs
       recallIndex = 0;
       recallTimer = window.setInterval(() => {
         try {
@@ -179,13 +174,10 @@ export function initApp() {
         } catch (e) {
           console.warn('Recall interval failed', e);
         }
-      }, intervalClamped) as unknown as number;
+      }, intervalMs) as unknown as number;
 
       setRecallRunning(true);
-      // show active interval in a separate info label for clarity
-      const intervalLabel = document.getElementById('infoLabelContainer2');
-      if (intervalLabel) intervalLabel.textContent = 'Recall interval: ' + intervalClamped + ' ms';
-      writeInfo('Recall started (interval ' + intervalClamped + 'ms)');
+      writeInfo('Recall started (interval ' + intervalMs + 'ms)');
     });
   }
 
@@ -204,8 +196,6 @@ export function initApp() {
         clearInterval(recallTimer);
         recallTimer = null;
         setRecallRunning(false);
-        const intervalLabel = document.getElementById('infoLabelContainer2');
-        if (intervalLabel) intervalLabel.textContent = '';
         writeInfo('Recall stopped');
       }
     });
@@ -241,7 +231,46 @@ export function initApp() {
         for (let r = 0; r < chunk; r++) {
           if (stopTraining) break;
 
-          network.trainBackpropagation(factory as any, 10, 10);
+          // Train on training data only (80% of patterns)
+          const trainSize = (factory as any).getTrainSize();
+          const randomTrainIndex = Math.floor(Math.random() * trainSize);
+          (factory as any).activateTrainPattern(randomTrainIndex);
+
+          // Perform one training step on this training pattern
+          network.recallNetwork();
+          const maxLayerIndex = network.getLayers().length - 1;
+          for (const neuron of network.getLayers()[maxLayerIndex].getNeurons()) {
+            (neuron as any).calculateEvaluateOutputError();
+          }
+          for (let k = maxLayerIndex; k > 0; k--) {
+            for (const neuron of network.getLayers()[k].getNeurons()) {
+              (neuron as any).calculateEvaluateOutputErrorHiddenNeurons(0.001);
+            }
+          }
+          for (let k = maxLayerIndex; k > 0; k--) {
+            for (const neuron of network.getLayers()[k].getNeurons()) {
+              for (const link of (neuron as any).getLinks()) {
+                const weightDecayTerm = Math.pow(10, -4.0) * link.weight;
+                const momentumTerm = 0.1 * link.deltaWeigthOld;
+                link.deltaWeigth = link.deltaWeigth - 2.0 * link.source.output * (neuron as any).getOutputDerived() * (neuron as any).getOutputError() + momentumTerm - weightDecayTerm;
+              }
+            }
+          }
+          for (let k = maxLayerIndex; k > 0; k--) {
+            for (const neuron of network.getLayers()[k].getNeurons()) {
+              for (const link of (neuron as any).getLinks()) {
+                link.weight = link.weight + link.deltaWeigth;
+                link.deltaWeigthOld = link.deltaWeigth;
+                link.deltaWeigth = 0.0;
+              }
+            }
+          }
+          for (let k = maxLayerIndex; k > 0; k--) {
+            for (const neuron of network.getLayers()[k].getNeurons()) {
+              (neuron as any).setOutputError(0.0);
+            }
+          }
+
           completed++;
           trainingIteration++;
         }
@@ -249,10 +278,11 @@ export function initApp() {
         // After each chunk, push update to the renderer
         publishModel();
 
-        // Update RME display and chart
+        // Calculate RMS for both train and test sets
         try {
-          const rms = network.rms(factory as any);
-          updateRMEDisplay(rms, trainingIteration);
+          const trainRms = network.rmsForIndices(factory as any, (factory as any).trainIndices);
+          const testRms = network.rmsForIndices(factory as any, (factory as any).testIndices);
+          updateRMEDisplay(trainRms, testRms, trainingIteration);
         } catch (e) {
           console.warn('Failed to update RME display', e);
         }
@@ -262,10 +292,14 @@ export function initApp() {
           const now = Date.now();
           if (now - lastLog >= LOG_EVERY_MS) {
             lastLog = now;
-            let rmsVal: number | string = 'n/a';
-            try { rmsVal = network.rms(factory as any).toFixed(6); } catch (e) { /* ignore */ }
-            console.log('Training progress - iterations:', completed, 'RMS:', rmsVal);
-            writeInfo('Training... iterations: ' + completed + (typeof rmsVal === 'string' ? '' : ' RMS=' + rmsVal));
+            let trainRmsVal: number | string = 'n/a';
+            let testRmsVal: number | string = 'n/a';
+            try {
+              trainRmsVal = network.rmsForIndices(factory as any, (factory as any).trainIndices).toFixed(6);
+              testRmsVal = network.rmsForIndices(factory as any, (factory as any).testIndices).toFixed(6);
+            } catch (e) { /* ignore */ }
+            console.log('Training progress - iterations:', completed, 'Train RMS:', trainRmsVal, 'Test RMS:', testRmsVal);
+            writeInfo(' iterations: ' + completed);
           }
         } catch (e) {
           console.warn('Progress logging failed', e);
@@ -277,9 +311,10 @@ export function initApp() {
 
       // Training stopped
       try {
-        const rms = network.rms(factory as any);
-        writeInfo('Training stopped. Iterations: ' + completed + ' RMS=' + rms.toFixed(6));
-        console.log('Training stopped. final RMS=', rms);
+        const trainRms = network.rmsForIndices(factory as any, (factory as any).trainIndices);
+        const testRms = network.rmsForIndices(factory as any, (factory as any).testIndices);
+        writeInfo('Training stopped. Iterations: ' + completed);
+        console.log('Training stopped');
       } catch (e) {
         console.warn('Failed to compute final RMS after training', e);
         writeInfo('Training stopped. Iterations: ' + completed);
@@ -336,10 +371,10 @@ export function initApp() {
           let rmsVal: number | string = 'n/a';
           try { rmsVal = network.rms(factory as any).toFixed(6); } catch (e) { /* ignore */ }
           console.log('Training progress - remaining:', total, 'completed:', completed, 'RMS:', rmsVal);
-          writeInfo('Training... remaining iterations: ' + total + (typeof rmsVal === 'string' ? '' : ' RMS=' + rmsVal));
+          writeInfo(' remaining iterations: ' + total + (typeof rmsVal === 'string' ? '' : ' RMS=' + rmsVal));
         } else {
           // still update info label with remaining count at least
-          writeInfo('Training... remaining iterations: ' + total);
+          writeInfo(' remaining iterations: ' + total);
         }
       } catch (e) {
         console.warn('Progress logging failed', e);
@@ -361,7 +396,7 @@ export function initApp() {
     if (trainBtn) trainBtn.disabled = false;
   }
 
-  writeInfo('ANN (TypeScript) ready. Click Train button to start training.');
+  writeInfo('Click Train button to start training.');
 }
 
 // Expose initApp globally so an external bootstrap (or manual call) can trigger it reliably

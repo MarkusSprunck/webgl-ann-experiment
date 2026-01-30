@@ -7,7 +7,8 @@ declare const Chart: any;
 
 export class RMEChart {
   private chart: any;
-  private rmeData: number[] = [];
+  private trainRmeData: number[] = [];
+  private testRmeData: number[] = [];
   private epochData: number[] = [];
   private maxDataPoints: number = Infinity; // Show all data points
   private canvasId: string;
@@ -56,10 +57,20 @@ export class RMEChart {
         data: {
           labels: [],
           datasets: [{
-            label: 'RMS Error',
+            label: 'Training RMS',
             data: [],
             borderColor: '#4CAF50',
             backgroundColor: 'rgba(76, 175, 80, 0.1)',
+            borderWidth: 2,
+            tension: 0.4,
+            pointRadius: 1,
+            pointHoverRadius: 4,
+            fill: true
+          }, {
+            label: 'Test RMS',
+            data: [],
+            borderColor: '#2196F3',
+            backgroundColor: 'rgba(33, 150, 243, 0.1)',
             borderWidth: 2,
             tension: 0.4,
             pointRadius: 1,
@@ -111,7 +122,14 @@ export class RMEChart {
           },
           plugins: {
             legend: {
-              display: false
+              display: true,
+              position: 'top',
+              labels: {
+                color: '#333',
+                font: { size: 11 },
+                usePointStyle: true,
+                padding: 10
+              }
             },
             tooltip: {
               backgroundColor: 'rgba(0,0,0,0.8)',
@@ -134,21 +152,27 @@ export class RMEChart {
     }
   }
 
-  public addDataPoint(iteration: number, rme: number): void {
+  public addDataPoint(iteration: number, trainRme: number, testRme?: number): void {
     if (!this.chart) {
       console.warn('Chart not initialized yet');
       return;
     }
 
     this.epochData.push(iteration);
-    this.rmeData.push(rme);
+    this.trainRmeData.push(trainRme);
+    if (testRme !== undefined) {
+      this.testRmeData.push(testRme);
+    }
 
     // Keep all data points - no limit
     // This shows complete training history from first iteration
 
     // Update chart data
     this.chart.data.labels = this.epochData.map(e => e.toString());
-    this.chart.data.datasets[0].data = this.rmeData;
+    this.chart.data.datasets[0].data = this.trainRmeData;
+    if (this.testRmeData.length > 0) {
+      this.chart.data.datasets[1].data = this.testRmeData;
+    }
     this.chart.update('none'); // Update without animation
 
     // Show container if hidden
@@ -158,12 +182,14 @@ export class RMEChart {
   }
 
   public reset(): void {
-    this.rmeData = [];
+    this.trainRmeData = [];
+    this.testRmeData = [];
     this.epochData = [];
 
     if (this.chart) {
       this.chart.data.labels = [];
       this.chart.data.datasets[0].data = [];
+      this.chart.data.datasets[1].data = [];
       this.chart.update('none');
     }
 
@@ -192,7 +218,10 @@ export class RMEChart {
     }
   }
 
-  public getLatestRME(): number | null {
-    return this.rmeData.length > 0 ? this.rmeData[this.rmeData.length - 1] : null;
+  public getLatestRME(): { train: number | null; test: number | null } {
+    return {
+      train: this.trainRmeData.length > 0 ? this.trainRmeData[this.trainRmeData.length - 1] : null,
+      test: this.testRmeData.length > 0 ? this.testRmeData[this.testRmeData.length - 1] : null
+    };
   }
 }

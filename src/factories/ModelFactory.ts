@@ -9,6 +9,11 @@ export class ModelFactory extends Pattern {
 
     // Inherits numberOfPattern, inputNeurons, outputNeurons and value from Pattern
 
+    // Train/test split
+    private trainIndices: number[] = [];
+    private testIndices: number[] = [];
+    private allIndices: number[] = [];
+
     createBindTestPattern(): Network {
         const network = new Network();
         const inputChanels = 20;
@@ -64,5 +69,60 @@ export class ModelFactory extends Pattern {
 
     getNumberOfPattern() {
         return this.numberOfPattern;
+    }
+
+    /**
+     * Create 80/20 train/test split with random selection
+     */
+    createTrainTestSplit(): void {
+        this.allIndices = [];
+        for (let i = 0; i < this.numberOfPattern; i++) {
+            this.allIndices.push(i);
+        }
+
+        // Shuffle indices randomly (Fisher-Yates shuffle)
+        for (let i = this.allIndices.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [this.allIndices[i], this.allIndices[j]] = [this.allIndices[j], this.allIndices[i]];
+        }
+
+        // Split 80/20
+        const splitIndex = Math.floor(this.numberOfPattern * 0.8);
+        this.trainIndices = this.allIndices.slice(0, splitIndex);
+        this.testIndices = this.allIndices.slice(splitIndex);
+
+        console.log(`Train/Test split created: ${this.trainIndices.length} training, ${this.testIndices.length} test samples`);
+    }
+
+    /**
+     * Activate a training pattern
+     */
+    activateTrainPattern(index: number): void {
+        if (index >= 0 && index < this.trainIndices.length) {
+            this.activatePattern(this.trainIndices[index]);
+        }
+    }
+
+    /**
+     * Activate a test pattern
+     */
+    activateTestPattern(index: number): void {
+        if (index >= 0 && index < this.testIndices.length) {
+            this.activatePattern(this.testIndices[index]);
+        }
+    }
+
+    /**
+     * Get number of training patterns
+     */
+    getTrainSize(): number {
+        return this.trainIndices.length;
+    }
+
+    /**
+     * Get number of test patterns
+     */
+    getTestSize(): number {
+        return this.testIndices.length;
     }
 }
