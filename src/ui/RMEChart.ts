@@ -9,7 +9,7 @@ export class RMEChart {
   private chart: any;
   private rmeData: number[] = [];
   private epochData: number[] = [];
-  private maxDataPoints: number = 100;
+  private maxDataPoints: number = Infinity; // Show all data points
   private canvasId: string;
   private container: HTMLElement | null;
 
@@ -84,7 +84,9 @@ export class RMEChart {
               ticks: {
                 color: '#666',
                 font: { size: 10 },
-                maxTicksLimit: 8
+                maxTicksLimit: 10, // Show up to 10 x-axis labels
+                autoSkip: true,
+                autoSkipPadding: 10
               },
               grid: {
                 color: 'rgba(0,0,0,0.05)'
@@ -141,11 +143,8 @@ export class RMEChart {
     this.epochData.push(iteration);
     this.rmeData.push(rme);
 
-    // Keep only last N points for performance
-    if (this.rmeData.length > this.maxDataPoints) {
-      this.epochData.shift();
-      this.rmeData.shift();
-    }
+    // Keep all data points - no limit
+    // This shows complete training history from first iteration
 
     // Update chart data
     this.chart.data.labels = this.epochData.map(e => e.toString());
