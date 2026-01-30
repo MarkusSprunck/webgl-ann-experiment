@@ -79,6 +79,10 @@ export function initApp() {
   let recallTimer: number | null = null;
   let recallIndex = 0;
 
+  // state for training control
+  let isTraining = false;
+  let stopTraining = false;
+
   function setRecallRunning(running: boolean) {
     if (recallBtn) recallBtn.disabled = running;
     if (stopBtn) stopBtn.disabled = !running;
@@ -95,19 +99,30 @@ export function initApp() {
         setRecallRunning(false);
         writeInfo('Recall stopped due to training');
       }
-      // Use fixed default iterations to simplify the UI
-      const DEFAULT_ITERATIONS = 10;
-      // Use steps=2 and small chunk to keep UI responsive
-      trainAsync(DEFAULT_ITERATIONS, 100, 100).catch((e) => {
-        console.error('Async training failed', e);
-        if (trainBtn) trainBtn.disabled = false;
-      });
+
+      // Start endless training
+      if (!isTraining) {
+        stopTraining = false;
+        trainContinuous().catch((e) => {
+          console.error('Training failed', e);
+          isTraining = false;
+          if (trainBtn) trainBtn.disabled = false;
+          if (stopBtn) stopBtn.disabled = true;
+        });
+      }
     });
   }
 
   if (resetBtn) {
     resetBtn.addEventListener('click', () => {
       console.log('Reset button clicked');
+
+      // Stop training if running
+      if (isTraining) {
+        stopTraining = true;
+        writeInfo('Training stopped due to reset');
+      }
+
       // stop recall if running
       if (recallTimer !== null) {
         clearInterval(recallTimer);
@@ -177,6 +192,14 @@ export function initApp() {
   if (stopBtn) {
     stopBtn.addEventListener('click', () => {
       console.log('Stop button clicked');
+
+      // Stop training if running
+      if (isTraining) {
+        stopTraining = true;
+        writeInfo('Training stopped by user');
+      }
+
+      // Stop recall if running
       if (recallTimer !== null) {
         clearInterval(recallTimer);
         recallTimer = null;
@@ -188,7 +211,88 @@ export function initApp() {
     });
   }
 
-  // Async chunked trainer to avoid blocking the UI (standalone so UI wiring can call it)
+  // Continuous training function - runs until stopped
+  async function trainContinuous() {
+    if (isTraining) {
+      console.log('Training already running');
+      return;
+    }
+
+    isTraining = true;
+    stopTraining = false;
+
+    if (trainBtn) trainBtn.disabled = true;
+    if (stopBtn) stopBtn.disabled = false;
+
+    writeInfo('Training started (continuous until stopped)...');
+    console.log('Continuous training started');
+
+    // Show RME chart
+    rmeChart.show();
+
+    const LOG_EVERY_MS = 200;
+    let lastLog = Date.now();
+    let completed = 0;
+
+    try {
+      while (!stopTraining) {
+        // Train in small chunks to keep UI responsive
+        const chunk = 100;
+        for (let r = 0; r < chunk; r++) {
+          if (stopTraining) break;
+
+          network.trainBackpropagation(factory as any, 10, 10);
+          completed++;
+          trainingIteration++;
+        }
+
+        // After each chunk, push update to the renderer
+        publishModel();
+
+        // Update RME display and chart
+        try {
+          const rms = network.rms(factory as any);
+          updateRMEDisplay(rms, trainingIteration);
+        } catch (e) {
+          console.warn('Failed to update RME display', e);
+        }
+
+        // Log progress and RMS periodically
+        try {
+          const now = Date.now();
+          if (now - lastLog >= LOG_EVERY_MS) {
+            lastLog = now;
+            let rmsVal: number | string = 'n/a';
+            try { rmsVal = network.rms(factory as any).toFixed(6); } catch (e) { /* ignore */ }
+            console.log('Training progress - iterations:', completed, 'RMS:', rmsVal);
+            writeInfo('Training... iterations: ' + completed + (typeof rmsVal === 'string' ? '' : ' RMS=' + rmsVal));
+          }
+        } catch (e) {
+          console.warn('Progress logging failed', e);
+        }
+
+        // Yield to the event loop to keep UI responsive
+        await new Promise((resolve) => setTimeout(resolve, 20));
+      }
+
+      // Training stopped
+      try {
+        const rms = network.rms(factory as any);
+        writeInfo('Training stopped. Iterations: ' + completed + ' RMS=' + rms.toFixed(6));
+        console.log('Training stopped. final RMS=', rms);
+      } catch (e) {
+        console.warn('Failed to compute final RMS after training', e);
+        writeInfo('Training stopped. Iterations: ' + completed);
+      }
+    } finally {
+      isTraining = false;
+      stopTraining = false;
+      if (trainBtn) trainBtn.disabled = false;
+      if (stopBtn) stopBtn.disabled = true;
+    }
+  }
+
+  // Legacy async trainer (kept for compatibility but not used)
   async function trainAsync(totalIterations: number, steps: number, chunk = 2) {
     if (trainBtn) trainBtn.disabled = true;
     writeInfo('Training (async)...');
@@ -257,31 +361,7 @@ export function initApp() {
     if (trainBtn) trainBtn.disabled = false;
   }
 
-  writeInfo('ANN (TypeScript) ready.');
-
-  // Auto-start training shortly after load: stop any recall and begin training.
-  (function autoStartTraining() {
-    const AUTO_ITERATIONS = 10;
-    // Delay a bit to allow the UI and renderer to settle
-    setTimeout(() => {
-      try {
-        console.log('Auto-starting training on load');
-        // stop recall if running
-        if (recallTimer !== null) {
-          clearInterval(recallTimer);
-          recallTimer = null;
-          setRecallRunning(false);
-          writeInfo('Recall stopped due to auto-training');
-        }
-        // start async training with the same defaults as the Train button
-        trainAsync(AUTO_ITERATIONS, 100, 100).catch((e) => {
-          console.error('Auto training failed', e);
-        });
-      } catch (e) {
-        console.warn('Auto-start training failed', e);
-      }
-    }, 200);
-  })();
+  writeInfo('ANN (TypeScript) ready. Click Train button to start training.');
 }
 
 // Expose initApp globally so an external bootstrap (or manual call) can trigger it reliably
