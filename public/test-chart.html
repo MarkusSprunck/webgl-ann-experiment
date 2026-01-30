@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RME Chart Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        #container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        #status {
+            margin: 10px 0;
+            padding: 10px;
+            background: #e8f5e9;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>RME Chart Test</h1>
+        <div id="status">Status: Initializing...</div>
+
+        <div style="margin: 20px 0;">
+            <button onclick="startSimulation()">Start Simulation</button>
+            <button onclick="stopSimulation()">Stop</button>
+            <button onclick="resetChart()">Reset</button>
+        </div>
+
+        <div style="position: relative; height: 300px;">
+            <canvas id="testChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        let chart = null;
+        let simulationInterval = null;
+        let iteration = 0;
+        let rmeData = [];
+
+        // Initialize Chart
+        function initChart() {
+            const canvas = document.getElementById('testChart');
+            const ctx = canvas.getContext('2d');
+
+            if (typeof Chart === 'undefined') {
+                document.getElementById('status').textContent = 'ERROR: Chart.js not loaded!';
+                document.getElementById('status').style.background = '#ffebee';
+                return;
+            }
+
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'RMS Error',
+                        data: [],
+                        borderColor: '#4CAF50',
+                        backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: false,
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Iteration' }
+                        },
+                        y: {
+                            title: { display: true, text: 'RMS Error' },
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            document.getElementById('status').textContent = 'Status: Ready! Chart.js v' + Chart.version;
+        }
+
+        // Simulate training
+        function startSimulation() {
+            if (simulationInterval) return;
+
+            document.getElementById('status').textContent = 'Status: Running simulation...';
+
+            simulationInterval = setInterval(() => {
+                iteration++;
+                // Simulate decreasing RMS error
+                const rme = Math.max(0.01, 1.0 / (1 + iteration * 0.05) + Math.random() * 0.05);
+                rmeData.push(rme);
+
+                // Update chart
+                chart.data.labels.push(iteration.toString());
+                chart.data.datasets[0].data.push(rme);
+
+                // Keep only last 50 points
+                if (chart.data.labels.length > 50) {
+                    chart.data.labels.shift();
+                    chart.data.datasets[0].data.shift();
+                }
+
+                chart.update('none');
+
+                document.getElementById('status').textContent =
+                    `Status: Iteration ${iteration}, RMS: ${rme.toFixed(6)}`;
+
+            }, 100);
+        }
+
+        function stopSimulation() {
+            if (simulationInterval) {
+                clearInterval(simulationInterval);
+                simulationInterval = null;
+                document.getElementById('status').textContent = 'Status: Stopped';
+            }
+        }
+
+        function resetChart() {
+            stopSimulation();
+            iteration = 0;
+            rmeData = [];
+            chart.data.labels = [];
+            chart.data.datasets[0].data = [];
+            chart.update();
+            document.getElementById('status').textContent = 'Status: Reset';
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', () => {
+            setTimeout(initChart, 100);
+        });
+    </script>
+</body>
+</html>

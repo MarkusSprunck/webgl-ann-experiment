@@ -8,6 +8,7 @@
     <script type="text/javascript" src="libs/Detector.js"></script>
     <script type="text/javascript" src="libs/three.min.js"></script>
     <script type="text/javascript" src="libs/Jsonhelper.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   </head>
   <body>
     <div id="header">
@@ -24,11 +25,18 @@
           <div id="infoLabelContainer1"></div>
           <div id="infoLabelContainer2"></div>
           <div id="infoLabelContainer3" class="warning"></div>
+          <div id="rmeDisplay" style="margin-top: 8px; color: #4CAF50; font-family: monospace; font-size: 14px;">RMS: --</div>
         </div>
       </div>
     </div>
 
     <div id="drawingArea"></div>
+
+    <!-- RME Graph -->
+    <div id="rmeGraphContainer" style="position: fixed; top: 80px; right: 10px; width: 400px; height: 250px; background: rgba(255,255,255,0.95); padding: 10px; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); z-index: 100; display: none;">
+      <h3 style="margin: 0 0 10px 0; font-size: 14px; color: #333;">RMS Error During Training</h3>
+      <canvas id="rmeChart" style="width: 100%; height: 200px;"></canvas>
+    </div>
 
     <div id="footer">
       <table align="right" width="100%">

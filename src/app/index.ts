@@ -1,6 +1,7 @@
 import {ModelFactory} from '../factories/ModelFactory';
 import {Network} from '../core/Network';
 import {exposeRendererToWindow} from '../renderer/WebGLRenderer';
+import {RMEChart} from '../ui/RMEChart';
 
 // Minimal browser glue to demonstrate TS ANN running in the existing HTML page
 function $(id: string): HTMLElement | null {
@@ -53,6 +54,19 @@ export function initApp() {
     }
   }
   publishModel();
+
+  // Initialize RME Chart
+  const rmeChart = new RMEChart('rmeChart', 'rmeGraphContainer');
+  const rmeDisplay = document.getElementById('rmeDisplay');
+  let trainingIteration = 0;
+
+  // Function to update RME display
+  function updateRMEDisplay(rme: number, iteration: number) {
+    if (rmeDisplay) {
+      rmeDisplay.textContent = `RMS: ${rme.toFixed(6)}`;
+    }
+    rmeChart.addDataPoint(iteration, rme);
+  }
 
   // Hook up simple UI buttons if present (use static controls in index.html)
   const trainBtn = document.getElementById('ts-train-button') as HTMLButtonElement | null;
@@ -110,6 +124,13 @@ export function initApp() {
       }
       writeInfo('Network links reset (TS).');
       publishModel();
+
+      // Reset RME display and chart
+      trainingIteration = 0;
+      rmeChart.reset();
+      if (rmeDisplay) {
+        rmeDisplay.textContent = 'RMS: --';
+      }
     });
   }
 
@@ -173,6 +194,9 @@ export function initApp() {
     writeInfo('Training (async)...');
     console.log('trainAsync start', { totalIterations, steps, chunk });
 
+    // Show RME chart
+    rmeChart.show();
+
     // total represents the remaining "calls" we will make; keep history for logging
     let total = totalIterations * steps;
     let completed = 0;
@@ -186,10 +210,19 @@ export function initApp() {
         network.trainBackpropagation(factory as any, 10, 10);
         total--;
         completed++;
+        trainingIteration++;
       }
 
       // After each chunk, push update to the renderer
       publishModel();
+
+      // Update RME display and chart
+      try {
+        const rms = network.rms(factory as any);
+        updateRMEDisplay(rms, trainingIteration);
+      } catch (e) {
+        console.warn('Failed to update RME display', e);
+      }
 
       // Log progress and RMS periodically
       try {

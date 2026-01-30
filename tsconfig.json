@@ -17,7 +17,8 @@
       "@factories/*": ["src/factories/*"],
       "@app/*": ["src/app/*"],
       "@renderer/*": ["src/renderer/*"],
-      "@bootstrap/*": ["src/bootstrap/*"]
+      "@bootstrap/*": ["src/bootstrap/*"],
+      "@ui/*": ["src/ui/*"]
     }
   },
   "include": ["src/**/*.ts"],
