@@ -2,6 +2,7 @@
   "name": "webgl-ann-sample-ts",
   "version": "1.0.0",
   "private": true,
+  "license": "MIT",
   "scripts": {
     "clean": "rimraf dist",
     "build": "./scripts/build.sh prod",
