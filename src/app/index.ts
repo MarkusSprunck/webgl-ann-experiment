@@ -75,6 +75,7 @@ export function initApp() {
   const resetBtn = document.getElementById('ts-reset-button') as HTMLButtonElement | null;
   const recallBtn = document.getElementById('ts-recall-button') as HTMLButtonElement | null;
   const stopBtn = document.getElementById('ts-stop-button') as HTMLButtonElement | null;
+  const analyzeBtn = document.getElementById('ts-analyze-button') as HTMLButtonElement | null;
 
   // state for recall loop
   let recallTimer: number | null = null;
@@ -201,6 +202,29 @@ export function initApp() {
     });
   }
 
+  if (analyzeBtn) {
+    analyzeBtn.addEventListener('click', () => {
+      console.log('Analyze Weights button clicked');
+
+      try {
+        const weightStats = network.analyzeWeightDistribution();
+        console.log('=== Weight Distribution Analysis ===');
+        console.log(`Total weights: ${weightStats.count}`);
+        console.log(`Min: ${weightStats.min.toFixed(6)}`);
+        console.log(`Max: ${weightStats.max.toFixed(6)}`);
+        console.log(`Mean: ${weightStats.mean.toFixed(6)}`);
+        console.log(`Standard Deviation: ${weightStats.stdDev.toFixed(6)}`);
+        console.log(`Typical range: [${(weightStats.mean - weightStats.stdDev).toFixed(6)}, ${(weightStats.mean + weightStats.stdDev).toFixed(6)}]`);
+        console.log('===================================');
+
+        writeInfo(`Weights: min=${weightStats.min.toFixed(3)}, max=${weightStats.max.toFixed(3)}, mean=${weightStats.mean.toFixed(3)}, σ=${weightStats.stdDev.toFixed(3)}`);
+      } catch (e) {
+        console.error('Failed to analyze weight distribution', e);
+        writeInfo('Failed to analyze weights');
+      }
+    });
+  }
+
   // Continuous training function - runs until stopped
   async function trainContinuous() {
     if (isTraining) {
@@ -298,7 +322,6 @@ export function initApp() {
               trainRmsVal = network.rmsForIndices(factory as any, (factory as any).trainIndices).toFixed(6);
               testRmsVal = network.rmsForIndices(factory as any, (factory as any).testIndices).toFixed(6);
             } catch (e) { /* ignore */ }
-            console.log('Training progress - iterations:', completed, 'Train RMS:', trainRmsVal, 'Test RMS:', testRmsVal);
             writeInfo(' iterations: ' + completed);
           }
         } catch (e) {
@@ -313,6 +336,16 @@ export function initApp() {
       try {
         const trainRms = network.rmsForIndices(factory as any, (factory as any).trainIndices);
         const testRms = network.rmsForIndices(factory as any, (factory as any).testIndices);
+
+        // Analyze weight distribution
+        const weightStats = network.analyzeWeightDistribution();
+        console.log('Weight distribution analysis:', weightStats);
+        console.log(`  Min: ${weightStats.min.toFixed(6)}`);
+        console.log(`  Max: ${weightStats.max.toFixed(6)}`);
+        console.log(`  Mean: ${weightStats.mean.toFixed(6)}`);
+        console.log(`  StdDev: ${weightStats.stdDev.toFixed(6)}`);
+        console.log(`  Count: ${weightStats.count}`);
+
         writeInfo('Training stopped. Iterations: ' + completed);
         console.log('Training stopped');
       } catch (e) {

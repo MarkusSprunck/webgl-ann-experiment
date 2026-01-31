@@ -112,6 +112,33 @@ export class Network {
         return result / indices.length;
     }
 
+    /**
+     * Analyze the distribution of weights across all links in the network
+     */
+    analyzeWeightDistribution(): { min: number; max: number; mean: number; stdDev: number; count: number } {
+        const weights: number[] = [];
+
+        for (const layer of this.layers) {
+            for (const neuron of layer.getNeurons()) {
+                for (const link of (neuron as any).getLinks()) {
+                    weights.push(link.weight);
+                }
+            }
+        }
+
+        if (weights.length === 0) {
+            return { min: 0, max: 0, mean: 0, stdDev: 0, count: 0 };
+        }
+
+        const min = Math.min(...weights);
+        const max = Math.max(...weights);
+        const mean = weights.reduce((sum, w) => sum + w, 0) / weights.length;
+        const variance = weights.reduce((sum, w) => sum + Math.pow(w - mean, 2), 0) / weights.length;
+        const stdDev = Math.sqrt(variance);
+
+        return { min, max, mean, stdDev, count: weights.length };
+    }
+
     toString() {
         return `{"layers":[${this.layers.map(l => l.toString()).join(',')}]}`;
     }
