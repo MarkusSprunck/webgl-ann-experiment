@@ -10,6 +10,13 @@ import { RMEChart } from '../ui/RMEChart';
 import { TrainingController } from '../controllers/TrainingController';
 import { RecallController } from '../controllers/RecallController';
 
+// Import utilities to expose them globally when module loads
+import '../utils/Detector';
+import '../utils/JsonParser';
+
+// Expose renderer to window immediately when module loads
+exposeRendererToWindow();
+
 export function initApp() {
   // Guard: ensure init runs only once
   if ((window as any).__tsInitDone) {
@@ -18,8 +25,6 @@ export function initApp() {
   }
   (window as any).__tsInitDone = true;
 
-  // Initialize WebGL renderer
-  exposeRendererToWindow();
 
   // Create neural network
   const factory = new ModelFactory();
@@ -103,36 +108,5 @@ function publishModel(network: any): void {
 
 // Expose initApp globally for bootstrap
 (window as any)['initApp'] = initApp;
-
-// Auto-init when document is ready
-if (typeof document !== 'undefined' && document.readyState === 'complete') {
-  initApp();
-}
-
-if (typeof window !== 'undefined') {
-  window.addEventListener('load', initApp);
-}
-
-// Expose initApp globally so an external bootstrap (or manual call) can trigger it reliably
-;(window as any)["initApp"] = initApp;
 console.log('initApp exported on window');
 
-// If the document is already loaded by the time this module runs, call initApp() immediately
-if (typeof document !== 'undefined' && document.readyState === 'complete') {
-  try {
-    initApp();
-  } catch (e) {
-    console.error('Error auto-initializing TS app after readyState complete', e);
-  }
-}
-
-// Auto-init when loaded in browser
-if (typeof window !== 'undefined') {
-  window.addEventListener('load', () => {
-    try {
-      initApp();
-    } catch (e) {
-      console.error('Error initializing TS app', e);
-    }
-  });
-}

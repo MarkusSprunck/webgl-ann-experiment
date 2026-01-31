@@ -43,7 +43,7 @@ fi
 # Step 2: Create dist structure
 echo ""
 echo "Step 2: Creating dist structure..."
-mkdir -p "$DIST_DIR/libs" "$DIST_DIR/styles"
+mkdir -p "$DIST_DIR/styles"
 print_status "Created dist directories"
 
 # Step 3: Bundle TypeScript
@@ -79,16 +79,9 @@ if [ -d "public/styles" ]; then
   print_status "Copied CSS files"
 fi
 
-# Step 5: Copy libraries
+# Step 5: Generate build info
 echo ""
-echo "Step 5: Copying third-party libraries..."
-cp libs/* "$DIST_DIR/libs/"
-print_status "Copied libraries"
-
-
-# Step 6: Generate build info
-echo ""
-echo "Step 6: Generating build info..."
+echo "Step 5: Generating build info..."
 cat > "$DIST_DIR/build-info.json" <<EOF
 {
   "buildDate": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",

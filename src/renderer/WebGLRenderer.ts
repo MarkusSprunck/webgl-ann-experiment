@@ -1,11 +1,12 @@
-// Type definitions for THREE.js objects
-type Vector3 = any;
-type Scene = any;
-type Camera = any;
-type Renderer = any;
-type Mesh = any;
-type Geometry = any;
-type Material = any;
+/**
+ * WebGL Renderer for Artificial Neural Network Visualization
+ * Updated for THREE.js r182
+ */
+
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { createObjects } from '../utils/JsonParser';
+import { Detector } from '../utils/Detector';
 
 interface ModelLayer {
   nodes: Array<{
@@ -23,11 +24,11 @@ interface Model {
  */
 export class WebGLRenderer {
   // Constants for drawing the network
-  private readonly CUBE_SIZE = 40;
+  private readonly CUBE_SIZE = 40
   private readonly DISTANCE_CUBE = this.CUBE_SIZE * 1.2;
   private readonly DISTANCE_LAYER = this.CUBE_SIZE * 4;
-  private readonly TEXT_LENGTH = 190;
-  private readonly TEXT_HEIGHT = 34;
+  private readonly TEXT_LENGTH = 120;
+  private readonly TEXT_HEIGHT = 24;
 
   // Artificial neural network model
   private model: Model | null = null;
@@ -45,11 +46,13 @@ export class WebGLRenderer {
   private deltaZ = 320;
 
   // WebGL
-  private grid: Mesh[] = [];
-  private scene: Scene | null = null;
-  private camera: Camera | null = null;
-  private renderer: Renderer | null = null;
-  private geometry: Geometry | null = null;
+  private grid: THREE.Mesh[] = [];
+  private scene: THREE.Scene | null = null;
+  private camera: THREE.PerspectiveCamera | null = null;
+  private renderer: THREE.WebGLRenderer | null = null;
+  private geometry: THREE.SphereGeometry | null = null;
+  private controls: OrbitControls | null = null;
+  private animationFrameId: number | null = null;
 
   /**
    * Draws the model and does the initialization if needed
@@ -72,6 +75,9 @@ export class WebGLRenderer {
       return;
     }
 
+    // Note: Controls update and rendering handled by animation loop
+    // This method just updates the neuron colors and sizes
+
     // Change size and color of all neurons
     for (let layerId = 0; layerId < this.model.layers.length; layerId++) {
       const numberOfNodes = this.model.layers[layerId].nodes.length;
@@ -80,7 +86,9 @@ export class WebGLRenderer {
         const cubeHeight = this.model.layers[layerId].nodes[nodeId].y * 2;
         this.grid[elementId].scale.y = 0.01 + cubeHeight;
         const color = this.getColorHex(0.01 + cubeHeight);
-        this.grid[elementId].material.color.setHex(color);
+        const material = this.grid[elementId].material as THREE.MeshStandardMaterial;
+        material.color.setHex(color);
+        material.emissive.setHex(color);
       }
     }
 
@@ -92,21 +100,32 @@ export class WebGLRenderer {
       const cubeHeight = this.model.layers[layerId].nodes[nodeId].y_ex * 2;
       this.grid[elementId].scale.y = 0.01 + cubeHeight;
       const color = this.getColorHex(0.01 + cubeHeight);
-      this.grid[elementId].material.color.setHex(color);
+      const material = this.grid[elementId].material as THREE.MeshStandardMaterial;
+      material.color.setHex(color);
+      material.emissive.setHex(color);
     }
 
-    this.renderer.render(this.scene, this.camera);
+    // Animation loop handles rendering continuously
   }
 
   /**
-   * Initialization of the WebGL stuff
+   * Initialization of the WebGL stuff - Simplified
    */
   private init(): void {
-    const THREE = window.THREE;
-    if (!THREE) {
-      console.error('THREE.js not loaded');
+    // Check WebGL support
+    if (!Detector.webgl) {
+      console.error('WebGL is not supported');
+      const infoLabel = document.getElementById('infoLabelContainer3');
+      if (infoLabel) {
+        infoLabel.innerHTML = 'WebGL is not available. Please use a modern browser.';
+      }
       return;
     }
+
+    // Calculate the center of the network for proper camera targeting
+    const networkCenterX = this.CUBE_SIZE + (this.maxRows - 1) * this.DISTANCE_CUBE / 2;
+    const networkCenterY = 0; // Base level
+    const networkCenterZ = this.CUBE_SIZE + this.maxCols * this.DISTANCE_LAYER / 2;
 
     // Create camera
     this.camera = new THREE.PerspectiveCamera(
@@ -115,82 +134,106 @@ export class WebGLRenderer {
       1,
       2000
     );
-    this.camera.position.x = this.halfsizeres + this.deltaX;
-    this.camera.position.y = this.halfsizeres + this.deltaY;
-    this.camera.position.z = this.sizeres * 0.85 + this.deltaZ;
-    this.camera.lookAt(
-      new THREE.Vector3(
-        this.halfsizeres + this.deltaX,
-        this.halfsizeres / 2 + this.deltaY,
-        this.halfsizeres + this.deltaZ
-      )
+
+    // Position camera looking at network center
+    const cameraDistance = this.sizeres * 0.85;
+    this.camera.position.set(
+      networkCenterX,
+      networkCenterY + 150, // Slightly elevated
+      networkCenterZ + cameraDistance
     );
+    this.camera.lookAt(networkCenterX, networkCenterY + 50, networkCenterZ);
 
-    // Create scene
+    // Create scene with dark background
     this.scene = new THREE.Scene();
-    this.scene.add(this.camera);
+    this.scene.background = new THREE.Color(0x1a1a1a); // Dark gray background
 
-    // Create renderer
-    if (window.Detector.webgl) {
-      this.renderer = new THREE.WebGLRenderer({
-        antialias: true,
-      });
-    } else {
-      this.renderer = new THREE.CanvasRenderer();
-      const infoLabel = document.getElementById('infoLabelContainer3');
-      if (infoLabel) {
-        infoLabel.innerHTML = 'WebGL is not available (canvas renderer active)';
-      }
-    }
+    // Create WebGL renderer with standard settings
+    this.renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: false,
+    });
+    this.renderer.setPixelRatio(window.devicePixelRatio);
 
-    // Create light
-    const light = new THREE.SpotLight(0xffffff, 1.25);
-    light.position.set(-500, 900, 1600);
-    light.target.position.set(this.halfsizeres, 0, this.halfsizeres);
-    light.castShadow = true;
-    this.scene.add(light);
+    // Add multiple lights for metallic highlights - from front and top
+    // Base ambient light
+    const ambientLight = new THREE.AmbientLight(0x303030, 0.5);
+    this.scene.add(ambientLight);
 
-    this.scene.add(new THREE.AmbientLight(0xf0f0f0));
+    // Main key light (brightest, from front-top)
+    const keyLight = new THREE.DirectionalLight(0xffffff, 1.8);
+    keyLight.position.set(0, 1000, 1200); // Front and top
+    this.scene.add(keyLight);
 
-    // Create cubes (for each neuron)
-    this.geometry = new THREE.CubeGeometry(
-      this.CUBE_SIZE,
-      this.CUBE_SIZE,
-      this.CUBE_SIZE
+    // Secondary front light (blue-ish, from front-left-top)
+    const frontLight = new THREE.DirectionalLight(0xa0b8d0, 1.0);
+    frontLight.position.set(-400, 800, 1000); // Front-left-top
+    this.scene.add(frontLight);
+
+    // Right front light (slight right, from front-top)
+    const rightLight = new THREE.DirectionalLight(0xb0c0d0, 0.8);
+    rightLight.position.set(500, 900, 1100); // Front-right-top
+    this.scene.add(rightLight);
+
+    // Top center light (directly above, pointing down)
+    const topLight = new THREE.DirectionalLight(0xffffff, 1.2);
+    topLight.position.set(0, 1500, 200); // Directly above, slightly forward
+    this.scene.add(topLight);
+
+    // Subtle fill light from below-front (prevents pure black shadows)
+    const fillLight = new THREE.DirectionalLight(0x6080a0, 0.4);
+    fillLight.position.set(0, -200, 800); // Below but still from front
+    this.scene.add(fillLight);
+
+    // Create spherical geometry for neurons (subtle rounded edges)
+    this.geometry = new THREE.SphereGeometry(
+      this.CUBE_SIZE /2,  // radius (1/10 of cube size for subtle rounding)
+      32,  // width segments (smoothness)
+      32   // height segments (smoothness)
     );
     const matrix = new THREE.Matrix4();
     matrix.makeTranslation(0, this.CUBE_SIZE / 2, 0);
-    this.geometry.applyMatrix(matrix);
+    this.geometry.applyMatrix4(matrix);
 
+
+    // Create metallic spheres for each neuron
     for (let layerId = 0; layerId <= this.maxCols; layerId++) {
       for (let nodeId = 0; nodeId < this.maxRows; nodeId++) {
-        const material = new THREE.MeshLambertMaterial({
+        const material = new THREE.MeshStandardMaterial({
           color: 0xffffff,
-          ambient: 0x3f3f3f,
-          reflectivity: 0.75,
+          metalness: 0.85,      // High metalness for metallic look
+          roughness: 0.20,      // Low roughness for shiny highlights
+          envMapIntensity: 1.5, // Enhanced reflections
         });
         const cube = new THREE.Mesh(this.geometry, material);
         cube.position.x = this.CUBE_SIZE + nodeId * this.DISTANCE_CUBE;
         cube.position.z = this.CUBE_SIZE + layerId * this.DISTANCE_LAYER;
-        cube.receiveShadow = false;
         cube.scale.y = 0.01;
         this.scene.add(cube);
         this.grid.push(cube);
       }
     }
 
-    // Create labeling (for each layer)
+    // Create text labels for layers
     let z = this.DISTANCE_CUBE;
-    this.scene.add(this.createText('Input', -this.TEXT_LENGTH / 2, 0, z));
+    const inputLabel = this.createText('Input', -this.TEXT_LENGTH / 2, 0, z);
+    if (inputLabel) this.scene.add(inputLabel);
+
     z = this.DISTANCE_CUBE + (this.maxCols - 1) * this.DISTANCE_LAYER;
-    this.scene.add(this.createText('Output', -this.TEXT_LENGTH / 2, 0, z));
+    const outputLabel = this.createText('Output', -this.TEXT_LENGTH / 2, 0, z);
+    if (outputLabel) this.scene.add(outputLabel);
+
     z = this.DISTANCE_CUBE + this.maxCols * this.DISTANCE_LAYER;
-    this.scene.add(this.createText('Expected', -this.TEXT_LENGTH / 2, 0, z));
+    const expectedLabel = this.createText('Expected', -this.TEXT_LENGTH / 2, 0, z);
+    if (expectedLabel) this.scene.add(expectedLabel);
+
     for (let layerId = 1; layerId < this.maxCols - 1; layerId++) {
       z = this.DISTANCE_CUBE + layerId * this.DISTANCE_LAYER;
-      this.scene.add(this.createText('Hidden', -this.TEXT_LENGTH / 2, 0, z));
+      const hiddenLabel = this.createText('Hidden', -this.TEXT_LENGTH / 2, 0, z);
+      if (hiddenLabel) this.scene.add(hiddenLabel);
     }
 
+    // Attach renderer to DOM
     const container = document.getElementById('drawingArea');
     if (!container) {
       console.error('drawingArea container not found');
@@ -198,129 +241,106 @@ export class WebGLRenderer {
     }
 
     container.appendChild(this.renderer.domElement);
-    // ensure the canvas is block-level so it fills the container without inline gaps
-    try {
-      this.renderer.domElement.style.display = 'block';
-    } catch (e) {
-      /* ignore */
-    }
+    this.renderer.domElement.style.display = 'block';
 
-    // Expose the canvas element and make it focusable so it receives keyboard events directly
-    this.setupKeyboardHandlers(container);
+    // Setup OrbitControls for mouse interaction (pass network center)
+    this.setupOrbitControls(networkCenterX, networkCenterY + 50, networkCenterZ);
 
-    // Support window resize
+    // Setup resize handler
     this.setupResizeHandler(container);
 
-    // Do all this just once
+    // Initialization complete
     this.initReady = true;
+    console.log('WebGL Renderer initialized with mouse controls (rotate, pan, zoom)');
+
+    // Render initial scene immediately
+    if (this.renderer && this.scene && this.camera) {
+      this.renderer.render(this.scene, this.camera);
+    }
   }
 
   /**
-   * Setup keyboard event handlers
+   * Setup OrbitControls for mouse-based camera control
    */
-  private setupKeyboardHandlers(container: HTMLElement): void {
-    try {
-      const canvasElt = this.renderer?.domElement;
-      if (canvasElt) {
-        canvasElt.tabIndex = canvasElt.tabIndex >= 0 ? canvasElt.tabIndex : 0;
-        canvasElt.style.outline = 'none';
-        try {
-          canvasElt.focus();
-        } catch (e) {
-          /* ignore focus errors */
-        }
-        // also attempt to focus after a short delay to handle browsers that block immediate focus on load
-        setTimeout(() => {
-          try {
-            canvasElt.focus();
-          } catch (e) {
-            /* ignore */
-          }
-        }, 200);
-        // ensure clicking the container focuses the canvas (so keyboard events go to canvas)
-        container.addEventListener(
-          'click',
-          () => {
-            try {
-              canvasElt.focus();
-            } catch (e) {
-              /* ignore */
-            }
-          },
-          false
-        );
-        // Also attach keydown handler directly to the canvas
-        canvasElt.addEventListener('keydown', this.doKeyDown.bind(this), false);
-      }
-    } catch (e) {
-      console.warn('Could not make renderer canvas focusable', e);
-    }
+  private setupOrbitControls(centerX: number, centerY: number, centerZ: number): void {
+    if (!this.camera || !this.renderer) return;
 
-    // Also attach a keydown handler to the container as a fallback
-    try {
-      container.tabIndex = container.tabIndex >= 0 ? container.tabIndex : 0;
-      container.style.outline = 'none';
-      try {
-        container.focus();
-      } catch (e) {
-        /* ignore focus errors */
-      }
-      // also try focusing the container after a short delay as an additional fallback
-      setTimeout(() => {
-        try {
-          container.focus();
-        } catch (e) {
-          /* ignore */
-        }
-      }, 250);
-      container.addEventListener('keydown', this.doKeyDown.bind(this), false);
-      console.log('WebGL: attached keydown listener to drawingArea container');
-    } catch (e) {
-      console.warn('Could not make drawingArea focusable', e);
-    }
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
-    // Support move with keyboard on the window as well
-    window.addEventListener('keydown', this.doKeyDown.bind(this), true);
-    console.log('WebGL: attached keydown listener to window (capture)');
-    // Also attach to document as an additional fallback
-    try {
-      document.addEventListener('keydown', this.doKeyDown.bind(this), true);
-      console.log('WebGL: attached keydown listener to document (capture)');
-    } catch (e) {
-      /* ignore */
+    // Configure controls
+    this.controls.enableDamping = true;        // Smooth camera movement
+    this.controls.dampingFactor = 0.05;        // Damping inertia
+    this.controls.screenSpacePanning = false;  // Pan in camera's plane
+    this.controls.minDistance = 100;           // Min zoom distance
+    this.controls.maxDistance = 2000;          // Max zoom distance
+    this.controls.maxPolarAngle = Math.PI;     // Allow full vertical rotation
+
+    // Set target to calculated network center
+    this.controls.target.set(centerX, centerY, centerZ);
+
+    this.controls.update();
+
+    console.log('OrbitControls enabled:');
+    console.log('  - Left mouse: Rotate');
+    console.log('  - Right mouse: Pan');
+    console.log('  - Mouse wheel: Zoom');
+    console.log(`  - Center: (${centerX.toFixed(1)}, ${centerY.toFixed(1)}, ${centerZ.toFixed(1)})`);
+
+    // Start continuous animation loop for orbit controls
+    this.startAnimationLoop();
+  }
+
+  /**
+   * Start continuous animation loop for smooth orbit controls
+   */
+  private startAnimationLoop(): void {
+    const animate = () => {
+      this.animationFrameId = requestAnimationFrame(animate);
+
+      // Update controls for smooth damping
+      if (this.controls) {
+        this.controls.update();
+      }
+
+      // Render the scene
+      if (this.renderer && this.scene && this.camera) {
+        this.renderer.render(this.scene, this.camera);
+      }
+    };
+
+    animate();
+    console.log('Animation loop started - scene renders continuously');
+  }
+
+  /**
+   * Stop animation loop if needed
+   */
+  private stopAnimationLoop(): void {
+    if (this.animationFrameId !== null) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
     }
   }
 
   /**
-   * Setup resize handler
+   * Setup resize handler - Simplified
    */
   private setupResizeHandler(container: HTMLElement): void {
     const resizeCallback = () => {
-      try {
-        const rectWidth = container.clientWidth;
-        const rectHeight = container.clientHeight;
-        const devicePixelRatio = window.devicePixelRatio || 1;
-        const width = Math.max(1, Math.floor(rectWidth * devicePixelRatio));
-        const height = Math.max(1, Math.floor(rectHeight * devicePixelRatio));
-        this.renderer?.setSize(width, height);
-        if (this.renderer?.domElement) {
-          this.renderer.domElement.style.width = rectWidth + 'px';
-          this.renderer.domElement.style.height = rectHeight + 'px';
-        }
-        // update camera aspect to match container aspect
-        if (this.camera && rectHeight > 0) {
-          this.camera.aspect = rectWidth / rectHeight;
-          if (typeof this.camera.updateProjectionMatrix === 'function') {
-            this.camera.updateProjectionMatrix();
-          }
-        }
-      } catch (e) {
-        console.warn('Resize callback failed', e);
-      }
+      if (!this.renderer || !this.camera) return;
+
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+
+      this.camera.aspect = width / height;
+      this.camera.updateProjectionMatrix();
+
+      this.renderer.setSize(width, height);
     };
-    window.addEventListener('resize', resizeCallback, false);
-    // also call resize once after a slight delay to ensure layout is settled
-    setTimeout(resizeCallback, 50);
+
+    window.addEventListener('resize', resizeCallback);
+    // Initial resize
+    resizeCallback();
   }
 
   /**
@@ -384,144 +404,11 @@ export class WebGLRenderer {
     return charFirst + charSecond;
   }
 
-  /**
-   * Move the graphic and camera with arrow keys
-   */
-  private doKeyDown(e: KeyboardEvent | string): void {
-    console.log('WebGL: keydown event', e); // Debug log at the start of the handler
-    // modernize key handling: prefer e.key, fall back to legacy properties
-    const delta = 10;
-    let key = '';
-
-    if (typeof e === 'string') {
-      key = e;
-    } else if (e && typeof e === 'object') {
-      // e.key is standard (e.g., 'ArrowRight', 'PageUp')
-      key = e.key || (e as any).keyIdentifier || '';
-      // fallback mapping from keyCode when necessary
-      if (!key && typeof e.keyCode === 'number') {
-        switch (e.keyCode) {
-          case 37:
-            key = 'ArrowLeft';
-            break;
-          case 38:
-            key = 'ArrowUp';
-            break;
-          case 39:
-            key = 'ArrowRight';
-            break;
-          case 40:
-            key = 'ArrowDown';
-            break;
-          case 33:
-            key = 'PageUp';
-            break;
-          case 34:
-            key = 'PageDown';
-            break;
-          default:
-            key = String.fromCharCode(e.keyCode);
-        }
-      }
-    }
-
-    // Normalize values like 'Left' (old WebKit) to 'ArrowLeft'
-    if (key === 'Left') key = 'ArrowLeft';
-    if (key === 'Right') key = 'ArrowRight';
-    if (key === 'Up') key = 'ArrowUp';
-    if (key === 'Down') key = 'ArrowDown';
-
-    // For navigation keys, prevent default scrolling to keep the canvas focused
-    const navKeys = [
-      'ArrowLeft',
-      'ArrowRight',
-      'ArrowUp',
-      'ArrowDown',
-      'PageUp',
-      'PageDown',
-    ];
-    if (
-      navKeys.indexOf(key) !== -1 &&
-      typeof e !== 'string' &&
-      typeof (e as KeyboardEvent).preventDefault === 'function'
-    ) {
-      try {
-        (e as KeyboardEvent).preventDefault();
-      } catch (ignore) {
-        /* ignore */
-      }
-    }
-
-    if (key === 'ArrowRight') {
-      this.deltaX -= delta;
-      this.camera!.position.x = this.camera!.position.x - delta;
-    } else if (key === 'ArrowLeft') {
-      this.deltaX += delta;
-      this.camera!.position.x = this.camera!.position.x + delta;
-    } else if (key === 'ArrowDown') {
-      this.deltaZ -= delta;
-      this.camera!.position.z = this.camera!.position.z - delta;
-    } else if (key === 'ArrowUp') {
-      this.deltaZ += delta;
-      this.camera!.position.z = this.camera!.position.z + delta;
-    } else if (key === 'PageDown') {
-      this.deltaY += delta;
-      this.camera!.position.y = this.camera!.position.y + delta;
-    } else if (key === 'PageUp') {
-      this.deltaY -= delta;
-      this.camera!.position.y = this.camera!.position.y - delta;
-    }
-
-    // Ensure camera consistently looks at the model center after position changes
-    if (this.camera && typeof this.camera.lookAt === 'function') {
-      const THREE = window.THREE;
-      const target = new THREE.Vector3(
-        this.halfsizeres + this.deltaX,
-        this.halfsizeres / 2 + this.deltaY,
-        this.halfsizeres + this.deltaZ
-      );
-      this.camera.lookAt(target);
-      // debug log camera & target
-      try {
-        console.log(
-          'WebGL: camera moved to',
-          this.camera.position,
-          'looking at',
-          target
-        );
-      } catch (e) {
-        /* ignore */
-      }
-      // ensure camera matrices are updated before rendering
-      try {
-        if (typeof this.camera.updateMatrixWorld === 'function') {
-          this.camera.updateMatrixWorld(true);
-        }
-      } catch (e) {
-        /* ignore */
-      }
-    }
-
-    // Immediately render the scene so the camera movement is visible
-    try {
-      if (
-        this.renderer &&
-        typeof this.renderer.render === 'function' &&
-        this.scene &&
-        this.camera
-      ) {
-        this.renderer.render(this.scene, this.camera);
-      }
-    } catch (e) {
-      console.warn('Render after keydown failed', e);
-    }
-  }
 
   /**
    * Helper for drawing the layer labeling
    */
-  private createText(text: string, x: number, y: number, z: number): any {
-    const THREE = window.THREE;
+  private createText(text: string, x: number, y: number, z: number): THREE.Mesh | null {
     const textHolder = document.createElement('canvas');
     const ctext = textHolder.getContext('2d');
     if (!ctext) {
@@ -536,13 +423,13 @@ export class WebGLRenderer {
     ctext.fillText(text, this.TEXT_LENGTH - 2, this.TEXT_HEIGHT - 6);
 
     const tex = new THREE.Texture(textHolder);
+    tex.needsUpdate = true;
+
     const mat = new THREE.MeshBasicMaterial({
       map: tex,
-      overdraw: true,
+      transparent: true,
+      depthTest: true,
     });
-    mat.transparent = true;
-    mat.map.needsUpdate = true;
-    mat.depthTest = true;
 
     const textBoard = new THREE.Mesh(
       new THREE.PlaneGeometry(textHolder.width, textHolder.height),
@@ -552,21 +439,20 @@ export class WebGLRenderer {
     textBoard.position.y = y;
     textBoard.position.z = z;
     textBoard.rotation.x = -Math.PI / 4;
-    textBoard.dynamic = true;
-    textBoard.doubleSided = true;
 
     return textBoard;
   }
 
   /**
-   * Create objects from model text (requires Jsonhelper.js to be loaded)
+   * Parse model text into Model object
    */
   private createObjects(modelText: string): Model {
-    // This function depends on the global createObjects function from Jsonhelper.js
-    if (typeof (window as any).createObjects === 'function') {
-      return (window as any).createObjects(modelText);
+    try {
+      return createObjects(modelText);
+    } catch (e) {
+      console.error('Failed to parse model JSON:', e);
+      throw new Error('Invalid model JSON: ' + (e as Error).message);
     }
-    throw new Error('createObjects function not found (Jsonhelper.js not loaded)');
   }
 }
 

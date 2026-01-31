@@ -12,17 +12,21 @@
   function waitAndStart() {
     var waited = 0;
     var interval = 100;
-    var timeout = 10000; // extended timeout to allow slower loads
+    var timeout = 20000; // Increased to 20 seconds for module loading
 
     function ready() {
-      return (
-        typeof window.initApp === 'function' &&
-        typeof window.renderData === 'function' &&
-        typeof window.THREE !== 'undefined'
-      );
+      var hasInitApp = typeof window.initApp === 'function';
+      var hasRenderData = typeof window.renderData === 'function';
+
+      if (!hasInitApp || !hasRenderData) {
+        console.log('Waiting... initApp:', hasInitApp, 'renderData:', hasRenderData);
+      }
+
+      return hasInitApp && hasRenderData;
     }
 
     if (ready()) {
+      console.log('Dependencies ready immediately, starting app...');
       try {
         window.initApp();
       } catch (e) {
@@ -31,10 +35,12 @@
       return;
     }
 
+    console.log('Waiting for dependencies to load...');
     var iv = setInterval(function() {
       waited += interval;
       if (ready()) {
         clearInterval(iv);
+        console.log('Dependencies ready after', waited, 'ms, starting app...');
         try {
           window.initApp();
         } catch (e) {
@@ -44,7 +50,9 @@
       }
       if (waited > timeout) {
         clearInterval(iv);
-        console.warn('Bootstrap: initApp/renderData/THREE not ready after timeout');
+        console.error('Bootstrap: initApp/renderData not ready after', timeout, 'ms');
+        console.error('window.initApp:', typeof window.initApp);
+        console.error('window.renderData:', typeof window.renderData);
       }
     }, interval);
   }
@@ -94,48 +102,6 @@
     setTimeout(check, interval);
   }
 
-  /**
-   * Dynamically load the TS module bundle only when THREE is ready
-   */
-  function loadModuleWhenThreeReady() {
-    var waited = 0;
-    var interval = 100;
-    var timeout = 10000; // 10s
-
-    function appendModule() {
-      try {
-        var s = document.createElement('script');
-        s.type = 'module';
-        s.defer = true;
-        s.src = 'bundle.js?v=' + Date.now();
-        document.head.appendChild(s);
-        console.log('Module bundle appended');
-      } catch (e) {
-        console.error('Failed to append module bundle', e);
-      }
-    }
-
-    if (typeof window !== 'undefined' && window.THREE) {
-      appendModule();
-      return;
-    }
-
-    var iv = setInterval(function() {
-      if (typeof window !== 'undefined' && window.THREE) {
-        clearInterval(iv);
-        appendModule();
-        return;
-      }
-      waited += interval;
-      if (waited > timeout) {
-        clearInterval(iv);
-        console.warn(
-          'Module loader: THREE not found after timeout, appending module anyway'
-        );
-        appendModule();
-      }
-    }, interval);
-  }
 
   /**
    * Initialize all bootstrap functions
@@ -148,9 +114,6 @@
 
     // Start canvas diagnostics
     waitForCanvas();
-
-    // Load the module bundle when THREE.js is ready
-    loadModuleWhenThreeReady();
   }
 
   // Auto-initialize when DOM is ready

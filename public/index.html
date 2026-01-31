@@ -6,10 +6,9 @@
           content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
     <title>WebGL ANN - TypeScript</title>
     <link rel="stylesheet" href="styles/main.css"/>
-    <script type="text/javascript" src="libs/Detector.js"></script>
-    <script type="text/javascript" src="libs/three.min.js"></script>
-    <script type="text/javascript" src="libs/Jsonhelper.js"></script>
+    <!-- Chart.js - from CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- THREE.js r182, Detector, and JSON parser now bundled in TypeScript modules -->
 </head>
 <body>
 <div id="header">
@@ -62,7 +61,9 @@
     </div>
 </noscript>
 
-<!-- Bootstrap script: handles initialization and module loading -->
-<script type="text/javascript" src="bootstrap.js"></script>
+<!-- Main application bundle (includes THREE.js r182) - loads first -->
+<script type="module" src="bundle.js"></script>
+<!-- Bootstrap script: handles initialization - loads after bundle -->
+<script type="text/javascript" src="bootstrap.js" defer></script>
 </body>
 </html>
