@@ -8,6 +8,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { createObjects } from '../utils/JsonParser';
 import { Detector } from '../utils/Detector';
 
+
 interface ModelLayer {
   nodes: Array<{
     y: number;
@@ -17,6 +18,54 @@ interface ModelLayer {
 
 interface Model {
   layers: ModelLayer[];
+}
+
+/**
+ * Create a box geometry with rounded edges
+ */
+function createRoundedBoxGeometry(
+  width: number,
+  height: number,
+  depth: number,
+  radius: number,
+  smoothness: number
+): THREE.BufferGeometry {
+  // Clamp radius
+  const maxRadius = Math.min(width, height, depth) / 2;
+  radius = Math.min(radius, maxRadius);
+
+  // Create shape with rounded corners
+  const shape = new THREE.Shape();
+  const eps = 0.00001;
+  const radius0 = radius - eps;
+
+  // Half dimensions
+  const hw = width / 2;
+  const hh = height / 2;
+  const hd = depth / 2;
+
+  // Draw rounded rectangle
+  shape.absarc(hw - radius, hh - radius, radius0, 0, Math.PI / 2, false);
+  shape.absarc(-hw + radius, hh - radius, radius0, Math.PI / 2, Math.PI, false);
+  shape.absarc(-hw + radius, -hh + radius, radius0, Math.PI, Math.PI * 1.5, false);
+  shape.absarc(hw - radius, -hh + radius, radius0, Math.PI * 1.5, Math.PI * 2, false);
+
+  // Extrude settings
+  const extrudeSettings = {
+    depth: depth - radius * 2,
+    bevelEnabled: true,
+    bevelSegments: smoothness * 2,
+    steps: 1,
+    bevelSize: radius,
+    bevelThickness: radius,
+    curveSegments: smoothness
+  };
+
+  // Create geometry and center it
+  const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+  geometry.center();
+
+  return geometry;
 }
 
 /**
@@ -185,11 +234,13 @@ export class WebGLRenderer {
     fillLight.position.set(0, -200, 800); // Below but still from front
     this.scene.add(fillLight);
 
-    // Create spherical geometry for neurons (subtle rounded edges)
-    this.geometry = new THREE.SphereGeometry(
-      this.CUBE_SIZE /2,  // radius (1/10 of cube size for subtle rounding)
-      32,  // width segments (smoothness)
-      32   // height segments (smoothness)
+    // Create box geometry with rounded edges for neurons
+    this.geometry = createRoundedBoxGeometry(
+        this.CUBE_SIZE * 0.8,
+        this.CUBE_SIZE,
+        this.CUBE_SIZE,
+        this.CUBE_SIZE / 10, // radius = 10% of cube size for subtle rounding
+        3 // smoothness/segments for rounded edges
     );
     const matrix = new THREE.Matrix4();
     matrix.makeTranslation(0, this.CUBE_SIZE / 2, 0);
